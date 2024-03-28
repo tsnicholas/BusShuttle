@@ -13,12 +13,6 @@ public class Driver
     public string LastName { get; set; }
 }
 
-public class Loop
-{
-    public int Id { get; set; }
-    public string Name { get; set; }
-}
-
 public class Route
 {
     public int Id { get; set; }

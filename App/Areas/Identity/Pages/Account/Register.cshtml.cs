@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using System.Security.Claims;
 
 namespace App.Areas.Identity.Pages.Account
 {
@@ -112,8 +113,9 @@ namespace App.Areas.Identity.Pages.Account
             if (ModelState.IsValid)
             {
                 var user = CreateUser();
-                bool isFirstUser = await _userManager.Users.Count() == 0;
-                var claim = new Claim("Activated", Boolean.toString(isFirstUser));
+                bool isFirstUser = _userManager.Users.Count() == 0;
+                var claim = new Claim("activated", isFirstUser.ToString());
+                await _userManager.AddToRoleAsync(user, isFirstUser ? "Manager" : "Driver");
                 await _userManager.AddClaimAsync(user, claim);
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);

@@ -5,6 +5,7 @@ using App.Models;
 
 namespace App.Controllers;
 
+[Authorize]
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
@@ -13,15 +14,9 @@ public class HomeController : Controller
     {
         _logger = logger;
     }
-
+    
     [Authorize("IsActivated")]
     public IActionResult Index()
-    {
-        return View();
-    }
-
-    [Authorize("IsActivated")]
-    public IActionResult Privacy()
     {
         return View();
     }

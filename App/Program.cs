@@ -7,7 +7,7 @@ namespace App;
 
 public class Program
 {
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
 
@@ -16,10 +16,10 @@ public class Program
         builder.Services.AddDbContext<App.Data.ApplicationDbContext>(options => options.UseSqlite(connectionString));
         builder.Services.AddDatabaseDeveloperPageExceptionFilter();
         builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<App.Data.ApplicationDbContext>();
         builder.Services.AddControllersWithViews();
-        builder.Services.AddAuthorization(options => options.AddPolicy("IsActivated", 
-            policyBuilder => policyBuilder.RequireClaim("Activated", "true")));
+        
 
         var app = builder.Build();
 
@@ -46,7 +46,19 @@ public class Program
             name: "default",
             pattern: "{controller=Home}/{action=Index}/{id?}");
         app.MapRazorPages();
-
+        // Seed the roles
+        using(var scope = app.Services.CreateScope())
+        {
+            var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            var roles = new []{"Manager", "Driver"};
+            foreach(var role in roles)
+            {
+                if(!await roleManager.RoleExistsAsync(role))
+                {
+                    await roleManager.CreateAsync(new IdentityRole(role));
+                }
+            }
+        }
         app.Run();
     }
 }

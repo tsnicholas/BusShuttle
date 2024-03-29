@@ -13,13 +13,13 @@ public class Program
 
         // Add services to the container.
         var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-        builder.Services.AddDbContext<App.Data.ApplicationDbContext>(options =>
-            options.UseSqlite(connectionString));
+        builder.Services.AddDbContext<App.Data.ApplicationDbContext>(options => options.UseSqlite(connectionString));
         builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-
         builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
             .AddEntityFrameworkStores<App.Data.ApplicationDbContext>();
         builder.Services.AddControllersWithViews();
+        builder.Services.AddAuthorization(options => options.AddPolicy("IsActivated", 
+            policyBuilder => policyBuilder.RequireClaim("Activated", "true")));
 
         var app = builder.Build();
 

@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using App.Models;
 
 namespace App.Controllers;
@@ -13,11 +14,13 @@ public class HomeController : Controller
         _logger = logger;
     }
 
+    [Authorize("IsActivated")]
     public IActionResult Index()
     {
         return View();
     }
 
+    [Authorize("IsActivated")]
     public IActionResult Privacy()
     {
         return View();

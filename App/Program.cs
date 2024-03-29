@@ -19,8 +19,8 @@ public class Program
             .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<App.Data.ApplicationDbContext>();
         builder.Services.AddControllersWithViews();
-        
-
+        builder.Services.AddAuthorization(options => options.AddPolicy("IsActivated", 
+            policyBuilder => policyBuilder.RequireClaim("activated", "True")));
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.

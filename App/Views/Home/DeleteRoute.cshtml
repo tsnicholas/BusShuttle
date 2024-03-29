@@ -1,11 +1,11 @@
-@model App.Models.DeleteBusModel
+@model App.Models.DeleteRouteModel
 @{
-    ViewData["Title"] = "Bus Remover";
+    ViewData["Title"] = "Route Remover";
 }
 <div class="container">
-    <form asp-action="DeleteBus">
+    <form asp-action="DeleteRoute">
         <input type="hidden" asp-for="Id">
-        <h2>Are you sure you want to delete this bus?</h2>
+        <h2>Are you sure you want to delete this route?</h2>
         <div class="form-group">
             <button input="submit"value="Yes" class="btn btn-primary">
         </div>

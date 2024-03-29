@@ -69,6 +69,22 @@ public class HomeController : Controller
 
     [HttpGet]
     [Authorize(Roles = "Manager")]
+    public IActionResult DeleteBus([FromRoute] int id)
+    {
+        return View(DeleteBusModel.DeleteBus(id));
+    }
+
+    [HttpPost]
+    [Authorize(Roles = "Manager")]
+    public async Task<IActionResult> DeleteBus(DeleteBusModel deleteBusModel)
+    {
+        if(!ModelState.IsValid) return View(deleteBusModel);
+        await Task.Run(() => _service.DeleteBusById(deleteBusModel.Id));
+        return RedirectToAction("Index");
+    }
+
+    [HttpGet]
+    [Authorize(Roles = "Manager")]
     public IActionResult DriverView()
     {
         return View(_service.GetAllDrivers().Select(driver => DriverViewModel.FromDriver(driver)));
@@ -106,6 +122,22 @@ public class HomeController : Controller
     {
         if(!ModelState.IsValid) return View(editDriverModel);
         await Task.Run(() => _service.EditDriverById(editDriverModel.Id, editDriverModel.FirstName, editDriverModel.LastName));
+        return RedirectToAction("Index");
+    }
+
+    [HttpGet]
+    [Authorize(Roles = "Manager")]
+    public IActionResult DeleteDriver([FromRoute] int id)
+    {
+        return View(DeleteDriverModel.DeleteDriver(id));
+    }
+
+    [HttpPost]
+    [Authorize(Roles = "Manager")]
+    public async Task<IActionResult> DeleteDriver(DeleteDriverModel deleteDriverModel)
+    {
+        if(!ModelState.IsValid) return View(deleteDriverModel);
+        await Task.Run(() => _service.DeleteDriverById(deleteDriverModel.Id));
         return RedirectToAction("Index");
     }
 
@@ -150,6 +182,22 @@ public class HomeController : Controller
         await Task.Run(() => _service.EditRouteById(editRouteModel.Id, editRouteModel.Order));
         return RedirectToAction("Index");
     }
+
+    [HttpGet]
+    [Authorize(Roles = "Manager")]
+    public IActionResult DeleteRoute([FromRoute] int id)
+    {
+        return View(DeleteRouteModel.DeleteRoute(id));
+    }
+
+    [HttpPost]
+    [Authorize(Roles = "Manager")]
+    public async Task<IActionResult> DeleteRoute(DeleteRouteModel deleteRouteModel)
+    {
+        if(!ModelState.IsValid) return View(deleteRouteModel);
+        await Task.Run(() => _service.DeleteRouteById(deleteRouteModel.Id));
+        return RedirectToAction("Index");
+    }
     
     [HttpGet]
     [Authorize(Roles = "Manager")]
@@ -190,6 +238,22 @@ public class HomeController : Controller
     {
         if(!ModelState.IsValid) return View(editStopModel);
         await Task.Run(() => _service.EditStopById(editStopModel.Id, editStopModel.Name, editStopModel.Latitude, editStopModel.Longitude, editStopModel.RouteId));
+        return RedirectToAction("Index");
+    }
+
+    [HttpGet]
+    [Authorize(Roles = "Manager")]
+    public IActionResult DeleteStop([FromRoute] int id)
+    {
+        return View(DeleteStopModel.DeleteStop(id));
+    }
+
+    [HttpPost]
+    [Authorize(Roles = "Manager")]
+    public async Task<IActionResult> DeleteStop(DeleteStopModel deleteStopModel)
+    {
+        if(!ModelState.IsValid) return View(deleteStopModel);
+        await Task.Run(() => _service.DeleteStopById(deleteStopModel.Id));
         return RedirectToAction("Index");
     }
 

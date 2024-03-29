@@ -1,17 +1,17 @@
-@model IEnumerable<App.Models.BusViewModel>;
+@model IEnumerable<App.Models.RouteViewModel>;
 @{
 
 }
 
-<h2>Bus Table</h2>
+<h2>Route Table</h2>
 <table class="table">
     <thead>
         <tr>
             <th>
-                Id
+                @Html.DisplayNameFor(model => model.Id)
             </th>
             <th>
-                Bus Number
+                @Html.DisplayNameFor(model => model.Order)
             </th>
             <th>
                 Edit Page
@@ -31,17 +31,17 @@
                         @Html.DisplayFor(model => item.Id)
                     </td>
                     <td>
-                        @Html.DisplayFor(model => item.BusNumber)
+                        @Html.DisplayFor(model => item.Order)
                     </td>
                     <td>
-                        <a asp-action="EditBus" asp-route-id="@item.Id">Edit</a>
+                        <a asp-action="EditRoute" asp-route-id="@item.Id">Edit</a>
                     </td>
                     <td>
-                        <a asp-action="DeleteBus" asp-route-id="@item.Id">Delete</a>
+                        <a asp-action="DeleteRoute" asp-route-id="@item.Id">Delete</a>
                     </td>
                 </tr>
             }
         }
     </tbody>
 </table>
-<a asp-action="CreateBus">Create Bus</a>
+<a asp-action="CreateRoute">Create Route</a>

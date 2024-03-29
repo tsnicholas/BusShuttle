@@ -58,11 +58,138 @@ public class HomeController : Controller
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     [Authorize(Roles = "Manager")]
     public async Task<IActionResult> EditBus(EditBusModel editBusModel)
     {
         if(!ModelState.IsValid) return View(editBusModel);
         await Task.Run(() => _service.EditBusById(editBusModel.Id, editBusModel.BusNumber));
+        return RedirectToAction("Index");
+    }
+
+    [HttpGet]
+    [Authorize(Roles = "Manager")]
+    public IActionResult DriverView()
+    {
+        return View(_service.GetAllDrivers().Select(driver => DriverViewModel.FromDriver(driver)));
+    }
+
+    [HttpGet]
+    [Authorize(Roles = "Manager")]
+    public IActionResult CreateDriver()
+    {
+        return View(CreateDriverModel.CreateDriver(_service.GetAllDrivers().Count() + 1));
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Manager")]
+    public async Task<IActionResult> CreateDriver([Bind("Id,FirstName,LastName")] CreateDriverModel driver)
+    {
+        if(!ModelState.IsValid) return View(driver);
+        await Task.Run(() => _service.CreateDriver(new Driver(driver.Id, driver.FirstName, driver.LastName)));
+        return RedirectToAction("Index");
+    }
+
+    [HttpGet]
+    [Authorize(Roles = "Manager")]
+    public IActionResult EditDriver([FromRoute] int id)
+    {
+        Driver selectedDriver = _service.GetDriverById(id);
+        return View(EditDriverModel.FromDriver(selectedDriver));
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Manager")]
+    public async Task<IActionResult> EditDriver(EditDriverModel editDriverModel)
+    {
+        if(!ModelState.IsValid) return View(editDriverModel);
+        await Task.Run(() => _service.EditDriverById(editDriverModel.Id, editDriverModel.FirstName, editDriverModel.LastName));
+        return RedirectToAction("Index");
+    }
+
+    [HttpGet]
+    [Authorize(Roles = "Manager")]
+    public IActionResult RouteView()
+    {
+        return View(_service.GetAllRoutes().Select(route => RouteViewModel.FromRoute(route)));
+    }
+
+    [HttpGet]
+    [Authorize(Roles = "Manager")]
+    public IActionResult CreateRoute()
+    {
+        return View(CreateRouteModel.CreateRoute(_service.GetAllRoutes().Count() + 1));
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Manager")]
+    public async Task<IActionResult> CreateRoute([Bind("Id,Order")] CreateRouteModel route)
+    {
+        if(!ModelState.IsValid) return View(route);
+        await Task.Run(() => _service.CreateRoute(new BusShuttleModel.Route(route.Id, route.Order)));
+        return RedirectToAction("Index");
+    }
+
+    [HttpGet]
+    [Authorize(Roles = "Manager")]
+    public IActionResult EditRoute([FromRoute] int id)
+    {
+        BusShuttleModel.Route selectedRoute = _service.GetRouteById(id);
+        return View(EditRouteModel.FromRoute(selectedRoute));
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Manager")]
+    public async Task<IActionResult> EditRoute(EditRouteModel editRouteModel)
+    {
+        if(!ModelState.IsValid) return View(editRouteModel);
+        await Task.Run(() => _service.EditRouteById(editRouteModel.Id, editRouteModel.Order));
+        return RedirectToAction("Index");
+    }
+    
+    [HttpGet]
+    [Authorize(Roles = "Manager")]
+    public IActionResult StopView()
+    {
+        return View(_service.GetAllStops().Select(stop => StopViewModel.FromStop(stop)));
+    }
+
+    [HttpGet]
+    [Authorize(Roles = "Manager")]
+    public IActionResult CreateStop()
+    {
+        return View(CreateStopModel.CreateStop(_service.GetAllStops().Count() + 1));
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Manager")]
+    public async Task<IActionResult> CreateStop([Bind("Id,Name,Latitude,Longitude,RouteId")] CreateStopModel stop)
+    {
+        if(!ModelState.IsValid) return View(stop);
+        await Task.Run(() => _service.CreateStop(new Stop(stop.Id, stop.Name, stop.Latitude, stop.Longitude, stop.RouteId)));
+        return RedirectToAction("Index");
+    }
+
+    [HttpGet]
+    [Authorize(Roles = "Manager")]
+    public IActionResult EditStop([FromRoute] int id)
+    {
+        Stop selectedStop = _service.GetStopById(id);
+        return View(EditStopModel.FromStop(selectedStop));
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Manager")]
+    public async Task<IActionResult> EditStop(EditStopModel editStopModel)
+    {
+        if(!ModelState.IsValid) return View(editStopModel);
+        await Task.Run(() => _service.EditStopById(editStopModel.Id, editStopModel.Name, editStopModel.Latitude, editStopModel.Longitude, editStopModel.RouteId));
         return RedirectToAction("Index");
     }
 

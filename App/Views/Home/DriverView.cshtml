@@ -1,17 +1,20 @@
-@model IEnumerable<App.Models.BusViewModel>;
+@model IEnumerable<App.Models.DriverViewModel>;
 @{
 
 }
 
-<h2>Bus Table</h2>
+<h2>Driver Table</h2>
 <table class="table">
     <thead>
         <tr>
             <th>
-                Id
+                @Html.DisplayNameFor(model => model.Id)
             </th>
             <th>
-                Bus Number
+                @Html.DisplayNameFor(model => model.FirstName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LastName)
             </th>
             <th>
                 Edit Page
@@ -31,17 +34,20 @@
                         @Html.DisplayFor(model => item.Id)
                     </td>
                     <td>
-                        @Html.DisplayFor(model => item.BusNumber)
+                        @Html.DisplayFor(model => item.FirstName)
                     </td>
                     <td>
-                        <a asp-action="EditBus" asp-route-id="@item.Id">Edit</a>
+                        @Html.DisplayFor(model => item.LastName)
                     </td>
                     <td>
-                        <a asp-action="DeleteBus" asp-route-id="@item.Id">Delete</a>
+                        <a asp-action="EditDriver" asp-route-id="@item.Id">Edit</a>
+                    </td>
+                    <td>
+                        <a asp-action="DeleteDriver" asp-route-id="@item.Id">Delete</a>
                     </td>
                 </tr>
             }
         }
     </tbody>
 </table>
-<a asp-action="CreateBus">Create Bus</a>
+<a asp-action="CreateDriver">Create Driver</a>

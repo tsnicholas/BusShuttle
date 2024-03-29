@@ -4,6 +4,17 @@ public class Bus
 {
     public int Id { get; set; }
     public int BusNumber { get; set; }
+
+    public Bus(int id, int busNumber)
+    {
+        Id = id;
+        BusNumber = busNumber;
+    }
+
+    public void Update(int newBusNumber)
+    {
+        BusNumber = newBusNumber;
+    }
 }
 
 public class Driver
@@ -11,12 +22,36 @@ public class Driver
     public int Id { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }
+
+    public Driver(int id, string firstName, string lastName)
+    {
+        Id = id;
+        FirstName = firstName;
+        LastName = lastName;
+    }
+
+    public void Update(string newFirstName, string newLastName)
+    {
+        FirstName = newFirstName;
+        LastName = newLastName;
+    }
 }
 
 public class Route
 {
     public int Id { get; set; }
     public int Order { get; set; }
+
+    public Route(int id, int order)
+    {
+        Id = id;
+        Order = order;
+    }
+
+    public void Update(int newOrder)
+    {
+        Order = newOrder;
+    }
 }
 
 public class Stop
@@ -26,13 +61,36 @@ public class Stop
     public double Latitude { get; set; }
     public double Longitude { get; set; }
     public int RouteId { get; set; }
+
+    public Stop(int id, string name, double latitude, double longitude, int routeId)
+    {
+        Id = id;
+        Name = name;
+        Latitude = latitude;
+        Longitude = longitude;
+        RouteId = routeId;
+    }
+
+    public void Update(string newName, double newLatitude, double newLongitude, int newRouteId)
+    {
+        Name = newName;
+        Latitude = newLatitude;
+        Longitude = newLongitude;
+        RouteId = newRouteId;
+    }
 }
 
 public class Loop
 {
     public int Id { get; set; }
     public string Name { get; set; }
-    public List<Route> Routes { get; set; } 
+    public List<Route> Routes { get; set; } = new();
+
+    public Loop(int id, string name)
+    {
+        Id = id;
+        Name = name;
+    } 
 }
 
 public class Entry

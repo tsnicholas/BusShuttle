@@ -1,0 +1,47 @@
+@model IEnumerable<App.Models.BusViewModel>;
+@{
+
+}
+
+<h2>Bus Table</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Id
+            </th>
+            <th>
+                Bus Number
+            </th>
+            <th>
+                Edit Page
+            </th>
+            <th>
+                Delete Button
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @if(Model != null)
+        {
+            @foreach(var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(model => item.Id)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(model => item.BusNumber)
+                    </td>
+                    <td>
+                        <a asp-action="EditBus" asp-route-id="@item.Id">Edit</a>
+                    </td>
+                    <td>
+                        <a asp-action="DeleteBus" asp-route-id="@item.Id">Delete</a>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+<a asp-action="CreateBus">Create Bus</a>

@@ -85,12 +85,17 @@ public class Loop
     public int Id { get; set; }
     public string Name { get; set; }
     public List<Route> Routes { get; set; } = new();
-
+    
     public Loop(int id, string name)
     {
         Id = id;
         Name = name;
-    } 
+    }
+
+    public void Update(string name)
+    {
+        Name = name;
+    }
 }
 
 public class Entry
@@ -103,4 +108,27 @@ public class Entry
     public int DriverId { get; set; }
     public int LoopId { get; set; }
     public int StopId { get; set; }
+
+    public Entry(int id, int boarded, int leftBehind, int busId, int driverId, int loopId, int stopId)
+    {
+        Id = id;
+        Timestamp = DateTime.Now;
+        Boarded = boarded;
+        LeftBehind = leftBehind;
+        BusId = busId;
+        DriverId = driverId;
+        LoopId = loopId;
+        StopId = stopId;
+    }
+
+    public void Update(DateTime timestamp, int boarded, int leftBehind, int busId, int driverId, int loopId, int stopId)
+    {
+        Timestamp = timestamp;
+        Boarded = boarded;
+        LeftBehind = leftBehind;
+        BusId = busId;
+        DriverId = driverId;
+        LoopId = loopId;
+        StopId = stopId;
+    }
 }

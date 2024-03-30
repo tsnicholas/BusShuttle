@@ -1,0 +1,83 @@
+@model IEnumerable<App.Models.EntryViewModel>;
+@{
+
+}
+
+<h2>Entry Table</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Timestamp)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Boarded)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LeftBehind)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BusId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DriverId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LoopId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.StopId)
+            </th>
+            <th>
+                Edit Page
+            </th>
+            <th>
+                Delete Button
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @if(Model != null)
+        {
+            @foreach(var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(model => item.Id)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(model => item.Timestamp)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(model => item.Boarded)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(model => item.LeftBehind)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(model => item.BusId)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(model => item.DriverId)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(model => item.LoopId)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(model => item.StopId)
+                    </td>
+                    <td>
+                        <a asp-action="EditEntry" asp-route-id="@item.Id">Edit</a>
+                    </td>
+                    <td>
+                        <a asp-action="DeleteEntry" asp-route-id="@item.Id">Delete</a>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+<a asp-action="CreateEntry">Create Entry</a>

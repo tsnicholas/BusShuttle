@@ -257,6 +257,122 @@ public class HomeController : Controller
         return RedirectToAction("Index");
     }
 
+    [HttpGet]
+    [Authorize(Roles = "Manager")]
+    public IActionResult LoopView()
+    {
+        return View(_service.GetAllLoops().Select(loop => LoopViewModel.FromLoop(loop)));
+    }
+
+    [HttpGet]
+    [Authorize(Roles = "Manager")]
+    public IActionResult CreateLoop()
+    {
+        return View(CreateLoopModel.CreateLoop(_service.GetAllLoops().Count() + 1));
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Manager")]
+    public async Task<IActionResult> CreateLoop([Bind("Id,Name")] CreateLoopModel loop)
+    {
+        if(!ModelState.IsValid) return View(loop);
+        await Task.Run(() => _service.CreateLoop(new Loop(loop.Id, loop.Name)));
+        return RedirectToAction("Index");
+    }
+
+    [HttpGet]
+    [Authorize(Roles = "Manager")]
+    public IActionResult EditLoop([FromRoute] int id)
+    {
+        Loop selectedLoop = _service.GetLoopWithId(id);
+        return View(EditLoopModel.FromLoop(selectedLoop));
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Manager")]
+    public async Task<IActionResult> EditLoop(EditLoopModel editLoopModel)
+    {
+        if(!ModelState.IsValid) return View(editLoopModel);
+        await Task.Run(() => _service.EditLoopWithId(editLoopModel.Id, editLoopModel.Name));
+        return RedirectToAction("Index");
+    }
+
+    [HttpGet]
+    [Authorize(Roles = "Manager")]
+    public IActionResult DeleteLoop([FromRoute] int id)
+    {
+        return View(DeleteLoopModel.DeleteLoop(id));
+    }
+
+    [HttpPost]
+    [Authorize(Roles = "Manager")]
+    public async Task<IActionResult> DeleteLoop(DeleteLoopModel deleteLoopModel)
+    {
+        if(!ModelState.IsValid) return View(deleteLoopModel);
+        await Task.Run(() => _service.DeleteLoopWithId(deleteLoopModel.Id));
+        return RedirectToAction("Index");
+    }
+
+    [HttpGet]
+    [Authorize(Roles = "Manager")]
+    public IActionResult EntryView()
+    {
+        return View(_service.GetAllEntries().Select(entry => EntryViewModel.FromEntry(entry)));
+    }
+
+    [HttpGet]
+    [Authorize(Roles = "Manager")]
+    public IActionResult CreateEntry()
+    {
+        return View(CreateEntryModel.CreateEntry(_service.GetAllEntries().Count() + 1));
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Manager")]
+    public async Task<IActionResult> CreateEntry([Bind("Id,Timestamp,Boarded,LeftBehind,BusId,DriverId,LoopId,StopId")] CreateEntryModel entry)
+    {
+        if(!ModelState.IsValid) return View(entry);
+        await Task.Run(() => _service.CreateEntry(new Entry(entry.Id, entry.Boarded, entry.LeftBehind, entry.BusId, entry.DriverId, entry.LoopId, entry.StopId)));
+        return RedirectToAction("Index");
+    }
+
+    [HttpGet]
+    [Authorize(Roles = "Manager")]
+    public IActionResult EditEntry([FromRoute] int id)
+    {
+        Entry selectedEntry = _service.GetEntryWithId(id);
+        return View(EditEntryModel.FromEntry(selectedEntry));
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Manager")]
+    public async Task<IActionResult> EditEntry(EditEntryModel editEntryModel)
+    {
+        if(!ModelState.IsValid) return View(editEntryModel);
+        await Task.Run(() => _service.EditEntryWithId(editEntryModel.Id, editEntryModel.Timestamp, editEntryModel.Boarded, editEntryModel.LeftBehind, editEntryModel.BusId, editEntryModel.DriverId, editEntryModel.LoopId, editEntryModel.StopId));
+        return RedirectToAction("Index");
+    }
+
+    [HttpGet]
+    [Authorize(Roles = "Manager")]
+    public IActionResult DeleteEntry([FromRoute] int id)
+    {
+        return View(DeleteEntryModel.DeleteEntry(id));
+    }
+
+    [HttpPost]
+    [Authorize(Roles = "Manager")]
+    public async Task<IActionResult> DeleteEntry(DeleteEntryModel deleteEntryModel)
+    {
+        if(!ModelState.IsValid) return View(deleteEntryModel);
+        await Task.Run(() => _service.DeleteEntryWithId(deleteEntryModel.Id));
+        return RedirectToAction("Index");
+    }
+
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {

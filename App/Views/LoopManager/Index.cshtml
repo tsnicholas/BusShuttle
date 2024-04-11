@@ -1,10 +1,10 @@
-@model IEnumerable<App.Models.DriverViewModel>;
+@model IEnumerable<App.Models.LoopViewModel>;
 @{
-    ViewData["Title"] = "Driver Table";
+    ViewData["Title"] = "Loop Table";
 }
 
-<h2>Driver Table</h2>
-<a asp-action="Index">Back to Menu</a>
+<h2>Loop Table</h2>
+<a asp-controller="Home" asp-action="Index">Back to Menu</a>
 <table class="table">
     <thead>
         <tr>
@@ -12,10 +12,7 @@
                 @Html.DisplayNameFor(model => model.Id)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.FirstName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.LastName)
+                @Html.DisplayNameFor(model => model.Name)
             </th>
             <th>
                 Edit Page
@@ -35,20 +32,17 @@
                         @Html.DisplayFor(model => item.Id)
                     </td>
                     <td>
-                        @Html.DisplayFor(model => item.FirstName)
+                        @Html.DisplayFor(model => item.Name)
                     </td>
                     <td>
-                        @Html.DisplayFor(model => item.LastName)
+                        <a asp-action="EditLoop" asp-route-id="@item.Id">Edit</a>
                     </td>
                     <td>
-                        <a asp-action="EditDriver" asp-route-id="@item.Id">Edit</a>
-                    </td>
-                    <td>
-                        <a asp-action="DeleteDriver" asp-route-id="@item.Id">Delete</a>
+                        <a asp-action="DeleteLoop" asp-route-id="@item.Id">Delete</a>
                     </td>
                 </tr>
             }
         }
     </tbody>
 </table>
-<a asp-action="CreateDriver">Create Driver</a>
+<a asp-action="CreateLoop">Create Loop</a>

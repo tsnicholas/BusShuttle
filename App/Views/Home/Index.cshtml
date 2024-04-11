@@ -13,29 +13,25 @@
             <div class="collapse navbar-collapse w-100" id="managementNavbar">
                 <ul class="navbar-nav nav w-100 gap-3 me-auto mb-2 mb-lg-0 fs-3 flex flex-column align-items-center">
                     <li class="nav-item border border-dark border-1 py-1 px-5 bg-primary">
-                        <a class="nav-link text-dark" asp-action="BusView">Buses</a>
+                        <a class="nav-link text-dark" asp-controller="BusManager" asp-action="Index">Buses</a>
                     </li>
                     <li class="nav-item border border-dark border-1 py-1 px-5 bg-primary">
-                        <a class="nav-link text-dark" asp-action="DriverView">Drivers</a>
+                        <a class="nav-link text-dark" asp-controller="DriverManager" asp-action="Index">Drivers</a>
                     </li>
                     <li class="nav-item border border-dark border-1 py-1 px-5 bg-primary">
-                        <a class="nav-link text-dark" asp-action="RouteView">Routes</a>
+                        <a class="nav-link text-dark" asp-controller="RouteManager" asp-action="Index">Routes</a>
                     </li>
                     <li class="nav-item border border-dark border-1 py-1 px-5 bg-primary">
-                        <a class="nav-link text-dark" asp-action="StopView">Stops</a>
+                        <a class="nav-link text-dark" asp-controller="StopManager" asp-action="Index">Stops</a>
                     </li>
                     <li class="nav-item border border-dark border-1 py-1 px-5 bg-primary">
-                        <a class="nav-link text-dark" asp-action="LoopView">Loops</a>
+                        <a class="nav-link text-dark" asp-controller="LoopManager" asp-action="Index">Loops</a>
                     </li>
                     <li class="nav-item border border-dark border-1 py-1 px-5 bg-primary">
-                        <a class="nav-link text-dark" asp-action="EntryView">Entries</a>
+                        <a class="nav-link text-dark" asp-controller="EntryManager" asp-action="Index">Entries</a>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
-}
-@if(User.IsInRole("Driver"))
-{
-    <h1>Hello Driver! This page has actually been made yet, but stay toned! :3</h1>
 }

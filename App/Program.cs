@@ -37,15 +37,45 @@ public class Program
 
         app.UseHttpsRedirection();
         app.UseStaticFiles();
-
         app.UseRouting();
-
         app.UseAuthorization();
 
         app.MapControllerRoute(
             name: "default",
-            pattern: "{controller=Home}/{action=Index}/{id?}");
+            pattern: "{controller=Home}/{action=Index}/{id?}"
+        );
+        app.MapControllerRoute(
+            name: "Bus Manager",
+            pattern: "{controller}/{action=Index}/{id?}",
+            defaults: new { controller = "BusManager"}
+        );
+        app.MapControllerRoute(
+            name: "Driver Manager",
+            pattern: "{controller=DriverManager}/{action=Index}/{id?}",
+            defaults: new { controller = "DriverManager"}
+        );
+        app.MapControllerRoute(
+            name: "Stop Manager",
+            pattern: "{controller=StopManager}/{action=Index}/{id?}",
+            defaults: new { controller = "StopManager"}
+        );
+        app.MapControllerRoute(
+            name: "Route Manager",
+            pattern: "{controller=RouteManager}/{action=Index}/{id?}",
+            defaults: new { controller = "RouteManager"}
+        );
+        app.MapControllerRoute(
+            name: "Loop Manager",
+            pattern: "{controller=LoopManager}/{action=Index}/{id?}",
+            defaults: new { controller = "LoopManager"}
+        );
+        app.MapControllerRoute(
+            name: "Entry Manager",
+            pattern: "{controller=EntryManager}/{action=Index}/{id?}",
+            defaults: new { controller = "EntryManager"}
+        );
         app.MapRazorPages();
+        
         // Seed the roles
         using(var scope = app.Services.CreateScope())
         {

@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 using BusShuttleModel;
-namespace App.Models;
+namespace App.Models.Manager;
 
-public class EntryViewModel
+public class EditEntryModel
 {
     public int Id { get; set; }
     public DateTime Timestamp { get; set; }
@@ -13,9 +13,9 @@ public class EntryViewModel
     public int LoopId { get; set; }
     public int StopId { get; set; }
 
-    public static EntryViewModel FromEntry(Entry entry)
+    public static EditEntryModel FromEntry(Entry entry)
     {
-        return new EntryViewModel
+        return new EditEntryModel
         {
             Id = entry.Id,
             Timestamp = entry.Timestamp,

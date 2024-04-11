@@ -1,4 +1,4 @@
-namespace App.Models;
+namespace App.Models.Manager;
 
 public class DeleteDriverModel
 {

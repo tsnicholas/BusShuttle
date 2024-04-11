@@ -1,27 +1,26 @@
 using System.ComponentModel.DataAnnotations;
 using BusShuttleModel;
-namespace App.Models;
+namespace App.Models.Manager;
 
-public class EditStopModel
+public class CreateStopModel
 {
     public int Id { get; set; }
     [Required]
     public string Name { get; set; }
     [Required]
     public double Longitude { get; set; }
-    [Required]
     public double Latitude { get; set; }
     public int RouteId { get; set; }
 
-    public static EditStopModel FromStop(Stop stop)
+    public static CreateStopModel CreateStop(int id)
     {
-        return new EditStopModel
+        return new CreateStopModel
         {
-            Id = stop.Id,
-            Name = stop.Name,
-            Longitude = stop.Longitude,
-            Latitude = stop.Latitude,
-            RouteId = stop.RouteId
+            Id = id,
+            Name = "",
+            Longitude = 0.0,
+            Latitude = 0.0,
+            RouteId = -1
         };
     }
 }

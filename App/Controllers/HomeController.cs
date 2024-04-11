@@ -1,10 +1,8 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using App.Models;
-using App.Service;
-using BusShuttleModel;
-
 namespace App.Controllers;
 
 [Authorize]
@@ -16,9 +14,24 @@ public class HomeController : Controller
     {
         _logger = logger;
     }
-    
-    [Authorize("IsActivated")]
+
     public IActionResult Index()
+    {
+        if(User.IsInRole("Manager"))
+        {
+            return RedirectToAction("Manager");
+        }
+        return RedirectToAction("Driver");
+    }
+    
+    [Authorize(Roles = "Manager")]
+    public IActionResult Manager()
+    {
+        return View();
+    }
+
+    [Authorize("IsActivated")]
+    public IActionResult Driver()
     {
         return View();
     }

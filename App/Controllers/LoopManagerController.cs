@@ -20,7 +20,7 @@ public class LoopManagerController : Controller
     }
 
     [HttpGet]
-    public IActionResult LoopView()
+    public IActionResult Index()
     {
         return View(_database.GetAllLoops().Select(loop => LoopViewModel.FromLoop(loop)));
     }

@@ -1,8 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using App.Data;
-using MvcIdentity.Data;
-
+using App.Service;
 namespace App;
 
 public class Program
@@ -13,14 +12,21 @@ public class Program
 
         // Add services to the container.
         var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-        builder.Services.AddDbContext<App.Data.ApplicationDbContext>(options => options.UseSqlite(connectionString));
+        builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite(connectionString));
         builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-        builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+        builder.Services.AddDefaultIdentity<IdentityUser>()
             .AddRoles<IdentityRole>()
-            .AddEntityFrameworkStores<App.Data.ApplicationDbContext>();
-        builder.Services.AddControllersWithViews();
+            .AddEntityFrameworkStores<ApplicationDbContext>();
         builder.Services.AddAuthorization(options => options.AddPolicy("IsActivated", 
             policyBuilder => policyBuilder.RequireClaim("activated", "True")));
+        builder.Services.Configure<IdentityOptions>(options => 
+        {
+            options.User.RequireUniqueEmail = true;
+
+        });
+        builder.Services.AddControllersWithViews();
+        builder.Services.AddScoped<UserManager<IdentityUser>>();
+        builder.Services.AddScoped<IAccountService, AccountService>();
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.

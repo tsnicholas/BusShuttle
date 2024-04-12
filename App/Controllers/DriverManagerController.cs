@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using App.Models;
 using App.Models.Manager;
 using App.Service;
@@ -11,11 +12,15 @@ namespace App.Controllers;
 public class DriverManagerController : Controller
 {
     private readonly ILogger<DriverManagerController> _logger;
+    private readonly IAccountService _accountService;
     private readonly DatabaseService _database;
 
-    public DriverManagerController(ILogger<DriverManagerController> logger)
+    public DriverManagerController(
+        ILogger<DriverManagerController> logger,
+        IAccountService accountService)
     {
         _logger = logger;
+        _accountService = accountService;
         _database = new DatabaseService();
     }
 
@@ -33,10 +38,26 @@ public class DriverManagerController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> CreateDriver([Bind("Id,FirstName,LastName")] CreateDriverModel driver)
+    public async Task<IActionResult> CreateDriver([Bind("Id,FirstName,LastName,Email,Password")] CreateDriverModel driver)
     {
         if(!ModelState.IsValid) return View(driver);
-        await Task.Run(() => _database.CreateDriver(new Driver(driver.Id, driver.FirstName, driver.LastName)));
+        var result = await _accountService.CreateDriverAccount(driver.Email, driver.Password);
+        if(!result.Succeeded)
+        {
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+            return View(driver);
+        }
+        await Task.Run(() => _database.CreateDriver(new Driver(driver.Id, driver.FirstName, driver.LastName, driver.Email)));
+        return RedirectToAction("Index");
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> ActivateDriver([FromRoute] string id)
+    {
+        await _accountService.UpdateAccountActivation(id, true);
         return RedirectToAction("Index");
     }
 

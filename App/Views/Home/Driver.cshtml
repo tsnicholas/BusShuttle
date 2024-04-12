@@ -1,1 +1,18 @@
-<p>To be built</p>
+@model App.Models.Driver.DriverHomeModel;
+@{
+    ViewData["Title"] = "Driver Home";
+}
+
+<form asp-action="Index">
+    <div class="form-group">
+        <select name="Loops">
+            @foreach(var loop in Model.Loops)
+            {
+                <option value="@loop.Id">@loop.Name</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Select" class="btn btn-primary" />
+    </div>
+</form>

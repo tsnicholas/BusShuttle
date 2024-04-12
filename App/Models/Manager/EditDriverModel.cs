@@ -1,3 +1,5 @@
+#nullable disable
+
 using System.ComponentModel.DataAnnotations;
 using static BusShuttleModel.Driver;
 namespace App.Models.Manager;

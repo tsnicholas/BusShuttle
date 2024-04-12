@@ -80,6 +80,11 @@ public class Program
             pattern: "{controller=EntryManager}/{action=Index}/{id?}",
             defaults: new { controller = "EntryManager"}
         );
+        app.MapControllerRoute(
+            name: "Loop Driver",
+            pattern: "{controller}/{action=Index}/{busId}/{loopId}",
+            defaults: new { controller = "Driver"}
+        );
         app.MapRazorPages();
         
         // Seed the roles

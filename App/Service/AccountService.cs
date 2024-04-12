@@ -46,7 +46,8 @@ public class AccountService : IAccountService
 
     public async Task UpdateAccountActivation(string email, bool IsActivated)
     {
-        IdentityUser user = await _userManager.FindByEmailAsync(email);
+        var user = await _userManager.FindByEmailAsync(email);
+        if(user == null) return;
         IList<Claim> userClaims = await _userManager.GetClaimsAsync(user);
         var previousClaim = userClaims.Single(claim => claim.Type == "activated");
         var newClaim = new Claim("activated", IsActivated.ToString());

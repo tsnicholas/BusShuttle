@@ -1,9 +1,12 @@
+#nullable disable
+
 using System.ComponentModel.DataAnnotations;
 using BusShuttleModel;
 namespace App.Models.Manager;
 
 public class EditStopModel
 {
+    [Required]
     public int Id { get; set; }
     [Required]
     public string Name { get; set; }

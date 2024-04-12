@@ -38,8 +38,9 @@ public class HomeController : Controller
     [Authorize("IsActivated")]
     public IActionResult Driver()
     {
+        List<Bus> buses = _database.GetAllBuses();
         List<BusShuttleModel.Loop> loops = _database.GetAllLoops();
-        return View(DriverHomeModel.FromLoops(loops));
+        return View(DriverHomeModel.FromLists(loops, buses));
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

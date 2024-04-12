@@ -1,3 +1,5 @@
+#nullable disable
+
 using BusShuttleModel;
 namespace App.Models.Manager;
 

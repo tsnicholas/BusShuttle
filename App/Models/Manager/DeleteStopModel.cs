@@ -1,3 +1,5 @@
+#nullable disable
+
 namespace App.Models.Manager;
 
 public class DeleteStopModel

@@ -1,0 +1,17 @@
+@model App.Models.Manager.AddRouteToLoopModel;
+@{
+    ViewData["Title"] = "Add Route To Loop";
+
+}
+
+<form asp-action="AddRoute">
+    <input type="hidden" asp-for="LoopId" />
+    <div class="form-group">
+        <label asp-for="RouteId" class="control-label"></label>
+        <input asp-for="RouteId" class="form-control" />
+        <span asp-validation-for="RouteId" class="Text-Danger"></span>
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Add" class="btn btn-primary" />
+    </div>
+</form>

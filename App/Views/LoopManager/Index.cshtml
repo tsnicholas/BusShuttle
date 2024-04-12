@@ -14,12 +14,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.Name)
             </th>
-            <th>
-                Edit Page
-            </th>
-            <th>
-                Delete Button
-            </th>
+            <th></th>
+            <th></th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -39,6 +36,9 @@
                     </td>
                     <td>
                         <a asp-action="DeleteLoop" asp-route-id="@item.Id">Delete</a>
+                    </td>
+                    <td>
+                        <a asp-action="EditRoutesInLoop" asp-route-id="@item.Id">Edit Routes</a>
                     </td>
                 </tr>
             }

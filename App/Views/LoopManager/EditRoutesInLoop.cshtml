@@ -1,0 +1,35 @@
+@model App.Models.Manager.EditRoutesInLoopModel;
+@{
+    ViewData["Title"] = "Loop Routes";
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Id
+            </th>
+            <th>
+                Order
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var item in Model.Routes)
+        {
+            <tr>
+                <td>
+                    @item.Id
+                </td>
+                <td>
+                    @item.Order
+                </td>
+                <td>
+                    <a asp-action="RemoveRoute" asp-route-id="@item.Id">Remove</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<a asp-action="AddRoute" asp-route-id="@Model.Id">Add Route</a>

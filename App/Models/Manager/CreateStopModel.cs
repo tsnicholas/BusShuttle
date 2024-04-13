@@ -12,7 +12,6 @@ public class CreateStopModel
     [Required]
     public double Longitude { get; set; }
     public double Latitude { get; set; }
-    public int RouteId { get; set; }
 
     public static CreateStopModel CreateStop(int id)
     {
@@ -21,8 +20,7 @@ public class CreateStopModel
             Id = id,
             Name = "",
             Longitude = 0.0,
-            Latitude = 0.0,
-            RouteId = -1
+            Latitude = 0.0
         };
     }
 }

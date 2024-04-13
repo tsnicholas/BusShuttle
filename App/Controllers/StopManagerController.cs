@@ -33,10 +33,10 @@ public class StopManagerController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> CreateStop([Bind("Id,Name,Latitude,Longitude,RouteId")] CreateStopModel stop)
+    public async Task<IActionResult> CreateStop([Bind("Id,Name,Latitude,Longitude")] CreateStopModel stop)
     {
         if(!ModelState.IsValid) return View(stop);
-        await Task.Run(() => _database.CreateStop(new Stop(stop.Id, stop.Name, stop.Latitude, stop.Longitude, stop.RouteId)));
+        await Task.Run(() => _database.CreateStop(new Stop(stop.Id, stop.Name, stop.Latitude, stop.Longitude)));
         return RedirectToAction("Index");
     }
 
@@ -52,7 +52,7 @@ public class StopManagerController : Controller
     public async Task<IActionResult> EditStop(EditStopModel editStopModel)
     {
         if(!ModelState.IsValid) return View(editStopModel);
-        await Task.Run(() => _database.EditStopById(editStopModel.Id, editStopModel.Name, editStopModel.Latitude, editStopModel.Longitude, editStopModel.RouteId));
+        await Task.Run(() => _database.EditStopById(editStopModel.Id, editStopModel.Name, editStopModel.Latitude, editStopModel.Longitude));
         return RedirectToAction("Index");
     }
 

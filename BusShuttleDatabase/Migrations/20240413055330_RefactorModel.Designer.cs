@@ -3,6 +3,7 @@ using System;
 using BusShuttleDatabase;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BusShuttleDatabase.Migrations
 {
     [DbContext(typeof(BusShuttleContext))]
-    partial class BusShuttleContextModelSnapshot : ModelSnapshot
+    [Migration("20240413055330_RefactorModel")]
+    partial class RefactorModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.3");
@@ -26,8 +29,7 @@ namespace BusShuttleDatabase.Migrations
                     b.Property<int>("BusNumber")
                         .HasColumnType("INTEGER");
 
-                    b.HasKey("Id")
-                        .HasName("PrimaryKey_Id");
+                    b.HasKey("Id");
 
                     b.ToTable("Buses");
                 });
@@ -44,16 +46,9 @@ namespace BusShuttleDatabase.Migrations
                     b.Property<int>("Order")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("StopId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id")
-                        .HasName("PrimaryKey_Id");
+                    b.HasKey("Id");
 
                     b.HasIndex("LoopId");
-
-                    b.HasIndex("StopId")
-                        .IsUnique();
 
                     b.ToTable("Routes");
                 });
@@ -76,8 +71,7 @@ namespace BusShuttleDatabase.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.HasKey("Id")
-                        .HasName("PrimaryKey_Id");
+                    b.HasKey("Id");
 
                     b.ToTable("Drivers");
                 });
@@ -109,16 +103,7 @@ namespace BusShuttleDatabase.Migrations
                     b.Property<DateTime>("Timestamp")
                         .HasColumnType("TEXT");
 
-                    b.HasKey("Id")
-                        .HasName("PrimaryKey_Id");
-
-                    b.HasIndex("BusId");
-
-                    b.HasIndex("DriverId");
-
-                    b.HasIndex("LoopId");
-
-                    b.HasIndex("StopId");
+                    b.HasKey("Id");
 
                     b.ToTable("Entries");
                 });
@@ -133,8 +118,7 @@ namespace BusShuttleDatabase.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.HasKey("Id")
-                        .HasName("PrimaryKey_Id");
+                    b.HasKey("Id");
 
                     b.ToTable("Loops");
                 });
@@ -155,87 +139,24 @@ namespace BusShuttleDatabase.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.HasKey("Id")
-                        .HasName("PrimaryKey_Id");
+                    b.Property<int>("RouteId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
 
                     b.ToTable("Stops");
                 });
 
             modelBuilder.Entity("BusShuttleModel.BusRoute", b =>
                 {
-                    b.HasOne("BusShuttleModel.Loop", "Loop")
+                    b.HasOne("BusShuttleModel.Loop", null)
                         .WithMany("Routes")
                         .HasForeignKey("LoopId");
-
-                    b.HasOne("BusShuttleModel.Stop", "Stop")
-                        .WithOne("Route")
-                        .HasForeignKey("BusShuttleModel.BusRoute", "StopId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Loop");
-
-                    b.Navigation("Stop");
-                });
-
-            modelBuilder.Entity("BusShuttleModel.Entry", b =>
-                {
-                    b.HasOne("BusShuttleModel.Bus", "Bus")
-                        .WithMany("Entries")
-                        .HasForeignKey("BusId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BusShuttleModel.Driver", "Driver")
-                        .WithMany("Entries")
-                        .HasForeignKey("DriverId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BusShuttleModel.Loop", "Loop")
-                        .WithMany("Entries")
-                        .HasForeignKey("LoopId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BusShuttleModel.Stop", "Stop")
-                        .WithMany("Entries")
-                        .HasForeignKey("StopId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Bus");
-
-                    b.Navigation("Driver");
-
-                    b.Navigation("Loop");
-
-                    b.Navigation("Stop");
-                });
-
-            modelBuilder.Entity("BusShuttleModel.Bus", b =>
-                {
-                    b.Navigation("Entries");
-                });
-
-            modelBuilder.Entity("BusShuttleModel.Driver", b =>
-                {
-                    b.Navigation("Entries");
                 });
 
             modelBuilder.Entity("BusShuttleModel.Loop", b =>
                 {
-                    b.Navigation("Entries");
-
                     b.Navigation("Routes");
-                });
-
-            modelBuilder.Entity("BusShuttleModel.Stop", b =>
-                {
-                    b.Navigation("Entries");
-
-                    b.Navigation("Route")
-                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

@@ -100,7 +100,7 @@ namespace BusShuttleDatabase.Migrations
                     b.ToTable("Loops");
                 });
 
-            modelBuilder.Entity("BusShuttleModel.Route", b =>
+            modelBuilder.Entity("BusRoute", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -143,7 +143,7 @@ namespace BusShuttleDatabase.Migrations
                     b.ToTable("Stops");
                 });
 
-            modelBuilder.Entity("BusShuttleModel.Route", b =>
+            modelBuilder.Entity("BusRoute", b =>
                 {
                     b.HasOne("BusShuttleModel.Loop", null)
                         .WithMany("Routes")

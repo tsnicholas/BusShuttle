@@ -7,18 +7,20 @@ namespace App.Models.Manager;
 public class AddRouteToLoopModel
 {
     [Required]
-    [Display(Name = "Loop Id")]
+    [Range(1, int.MaxValue, ErrorMessage = "Please enter a valid Loop Id.")]
     public int LoopId { get; set; }
     [Required]
-    [Display(Name = "Route Id")]
-    public int RouteId { get; set; }
+    public List<BusRoute> Routes { get; set; } = new();
+    [Required]
+    [Range(1, int.MaxValue, ErrorMessage = "Please enter a valid Route Id.")]
+    public int RouteId { get; set; } = 1;
 
-    public static AddRouteToLoopModel FromId(int Id)
+    public static AddRouteToLoopModel FromId(int Id, List<BusRoute> routes)
     {
         return new AddRouteToLoopModel
         {
             LoopId = Id,
-            RouteId = -1
+            Routes = routes
         };
     }
 }

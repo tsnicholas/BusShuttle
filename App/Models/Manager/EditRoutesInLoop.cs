@@ -5,17 +5,15 @@ namespace App.Models.Manager;
 
 public class EditRoutesInLoopModel
 {
-    public int Id { get; set; }
-    public string Name { get; set; }
-    public List<BusShuttleModel.Route> Routes { get; set; }
+    public int LoopId { get; set; }
+    public List<BusRoute> Routes { get; set; }
 
-    public static EditRoutesInLoopModel FromLoop(Loop loop)
+    public static EditRoutesInLoopModel FromLoop(int loopId, List<BusRoute> routes)
     {
         return new EditRoutesInLoopModel
         {
-            Id = loop.Id,
-            Name = loop.Name,
-            Routes = loop.Routes
+            LoopId = loopId,
+            Routes = routes
         };
     }
 }

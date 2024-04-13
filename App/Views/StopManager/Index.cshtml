@@ -20,15 +20,8 @@
             <th>
                 @Html.DisplayNameFor(model => model.Longitude)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.RouteId)
-            </th>
-            <th>
-                Edit Page
-            </th>
-            <th>
-                Delete Button
-            </th>
+            <th></th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -48,9 +41,6 @@
                     </td>
                     <td>
                         @Html.DisplayFor(model => item.Longitude)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(model => item.RouteId)
                     </td>
                     <td>
                         <a asp-action="EditStop" asp-route-id="@item.Id">Edit</a>

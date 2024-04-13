@@ -8,7 +8,7 @@ public class RouteViewModel
     public int Id { get; set; }
     public int Order { get; set; }
 
-    public static RouteViewModel FromRoute(BusShuttleModel.Route route)
+    public static RouteViewModel FromRoute(BusRoute route)
     {
         return new RouteViewModel
         {

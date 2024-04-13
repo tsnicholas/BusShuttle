@@ -10,7 +10,7 @@ public class EditRouteModel
     [Required]
     public int Order { get; set; }
 
-    public static EditRouteModel FromRoute(BusShuttleModel.Route route)
+    public static EditRouteModel FromRoute(BusRoute route)
     {
         return new EditRouteModel
         {

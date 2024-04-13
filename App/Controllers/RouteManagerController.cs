@@ -36,14 +36,14 @@ public class RouteManagerController : Controller
     public async Task<IActionResult> CreateRoute([Bind("Id,Order")] CreateRouteModel route)
     {
         if(!ModelState.IsValid) return View(route);
-        await Task.Run(() => _database.CreateRoute(new BusShuttleModel.Route(route.Id, route.Order)));
+        await Task.Run(() => _database.CreateRoute(new BusRoute(route.Id, route.Order)));
         return RedirectToAction("Index");
     }
 
     [HttpGet]
     public IActionResult EditRoute([FromRoute] int id)
     {
-        BusShuttleModel.Route selectedRoute = _database.GetRouteById(id);
+        BusRoute selectedRoute = _database.GetRouteById(id);
         return View(EditRouteModel.FromRoute(selectedRoute));
     }
 

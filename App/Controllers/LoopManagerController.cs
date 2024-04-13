@@ -60,34 +60,28 @@ public class LoopManagerController : Controller
     public IActionResult EditRoutesInLoop([FromRoute] int id)
     {
         Loop loop = _database.GetLoopWithId(id);
-        return View(EditRoutesInLoopModel.FromLoop(loop));
+        return View(EditRoutesInLoopModel.FromLoop(id, loop.Routes));
     }
 
     [HttpGet]
     public IActionResult AddRoute([FromRoute] int id)
     {
-        return View(AddRouteToLoopModel.FromId(id));
+        Loop loop = _database.GetLoopWithId(id);
+        List<BusRoute> routes = _database.GetAllRoutes();
+        return View(AddRouteToLoopModel.FromId(id, routes));
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> AddRoute(AddRouteToLoopModel model)
+    public async Task<IActionResult> AddRoute([Bind("LoopId,RouteId")] AddRouteToLoopModel model)
     {
         if(!ModelState.IsValid) return View(model);
-        BusShuttleModel.Route? route = _database.GetRouteById(model.RouteId);
+        BusRoute? route = _database.GetRouteById(model.RouteId);
         if(route == null) return View(model);
-        Loop loop = _database.GetLoopWithId(model.LoopId);
-        await Task.Run(() => _database.AddRouteToLoop(loop, route));
-        return RedirectToAction("Index");
-    }
-
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public IActionResult RemoveRoute(int loopId, int routeId)
-    {
-        Loop loop = _database.GetLoopWithId(loopId);
-        BusShuttleModel.Route route = _database.GetRouteById(routeId);
-        _database.RemoveRouteFromLoop(loop, route);
+        await Task.Run(() => {
+            Loop loop = _database.GetLoopWithId(model.LoopId);
+            _database.AddRouteToLoop(loop, route);
+        });
         return RedirectToAction("Index");
     }
 

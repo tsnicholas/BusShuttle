@@ -8,7 +8,7 @@ public class LoopViewModel
 {
     public int Id { get; set; }
     public string Name { get; set; }
-    public List<BusShuttleModel.Route> Routes { get; set; }
+    public List<BusRoute> Routes { get; set; }
 
     public static LoopViewModel FromLoop(Loop loop)
     {

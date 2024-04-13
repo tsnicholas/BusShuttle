@@ -32,4 +32,5 @@
         }
     </tbody>
 </table>
-<a asp-action="AddRoute" asp-route-id="@Model.Id">Add Route</a>
+<p>Number of Routes: @Model.Routes.Count()</p>
+<a asp-action="AddRoute" asp-route-id="@Model.LoopId">Add Route</a>

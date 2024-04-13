@@ -39,7 +39,7 @@ public class DriverController : Controller
         List<Stop> loopStops = new List<Stop>();
         foreach(var route in loop.Routes)
         {
-            var stop = allStops.Single(stop => stop.RouteId == route.Id);
+            var stop = route.Stop;
             if(stop == null) continue;
             loopStops.Add(stop);
         }
@@ -68,6 +68,27 @@ public class DriverController : Controller
             routeDictionary.Add("loopId", model.LoopId);
         });
         return RedirectToAction("Index", routeDictionary);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> SubmitEntry(LoopEntryModel model)
+    {
+        if(!ModelState.IsValid)
+        {
+            return View(model);
+        }
+        var routeParams = new RouteValueDictionary();
+        await Task.Run(() => {
+            Stop selectedStop = _database.GetStopById(model.StopId);
+            int nextId = _database.GetAllEntries().Count() + 1;
+            Entry newEntry = new Entry(nextId, model.Boarded, model.LeftBehind, model.TheBus, 
+                model.BusDriver, model.BusLoop, selectedStop);
+            _database.CreateEntry(newEntry);
+             routeParams.Add("busId", model.TheBus.Id);
+            routeParams.Add("loopId", model.BusLoop.Id);
+        });
+        return RedirectToAction("Index", routeParams);
     }
     
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

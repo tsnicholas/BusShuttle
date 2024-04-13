@@ -36,7 +36,11 @@ public class EntryManagerController : Controller
     public async Task<IActionResult> CreateEntry([Bind("Id,Timestamp,Boarded,LeftBehind,BusId,DriverId,LoopId,StopId")] CreateEntryModel entry)
     {
         if(!ModelState.IsValid) return View(entry);
-        await Task.Run(() => _database.CreateEntry(new Entry(entry.Id, entry.Boarded, entry.LeftBehind, entry.BusId, entry.DriverId, entry.LoopId, entry.StopId)));
+        Bus bus = _database.GetBusById(entry.BusId);
+        Driver driver = _database.GetDriverById(entry.DriverId);
+        Loop loop = _database.GetLoopWithId(entry.LoopId);
+        Stop stop = _database.GetStopById(entry.StopId);
+        await Task.Run(() => _database.CreateEntry(new Entry(entry.Id, entry.Boarded, entry.LeftBehind, bus, driver, loop, stop)));
         return RedirectToAction("Index");
     }
 

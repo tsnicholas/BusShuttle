@@ -2,16 +2,18 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using BusShuttleDatabase;
 using BusShuttleModel;
 namespace App.Service;
 
 public class DatabaseService
 {
-    private readonly BusShuttleContext _context = new BusShuttleContext();
+    private readonly BusShuttleContext _context;
 
     public DatabaseService()
     {
+        _context = new BusShuttleContext();
     }
 
     public List<Bus> GetAllBuses()
@@ -86,25 +88,25 @@ public class DatabaseService
         _context.SaveChanges();
     }
 
-    public List<BusShuttleModel.Route> GetAllRoutes()
+    public List<BusRoute> GetAllRoutes()
     {
         return _context.Routes.OrderBy(route => route.Id).ToList();
     }
 
-    public void CreateRoute(BusShuttleModel.Route route)
+    public void CreateRoute(BusRoute route)
     {
         _context.Routes.Add(route);
         _context.SaveChanges();
     }
 
-    public BusShuttleModel.Route GetRouteById(int id)
+    public BusRoute GetRouteById(int id)
     {
         return _context.Routes.Single(route => route.Id == id);
     }
 
     public void EditRouteById(int id, int order)
     {
-        BusShuttleModel.Route selectedRoute = GetRouteById(id);
+        BusRoute selectedRoute = GetRouteById(id);
         if(selectedRoute == null) return;
         selectedRoute.Update(order);
         _context.SaveChanges();
@@ -112,7 +114,7 @@ public class DatabaseService
 
     public void DeleteRouteById(int id)
     {
-        BusShuttleModel.Route selectedRoute = GetRouteById(id);
+        BusRoute selectedRoute = GetRouteById(id);
         if(selectedRoute == null) return;
         _context.Routes.Remove(selectedRoute);
         _context.SaveChanges();
@@ -134,11 +136,11 @@ public class DatabaseService
         return _context.Stops.Single(stop => stop.Id == id);
     }
 
-    public void EditStopById(int id, string name, double latitude, double longitude, int routeId)
+    public void EditStopById(int id, string name, double latitude, double longitude)
     {
         Stop selectedStop = GetStopById(id);
         if(selectedStop == null) return;
-        selectedStop.Update(name, latitude, longitude, routeId);
+        selectedStop.Update(name, latitude, longitude);
         _context.SaveChanges();
     }
 
@@ -170,7 +172,11 @@ public class DatabaseService
     {
         Entry selectedEntry = GetEntryWithId(id);
         if(selectedEntry == null) return;
-        selectedEntry.Update(timestamp, boarded, leftBehind, busId, driverId, loopId, stopId);
+        Bus bus = GetBusById(busId); 
+        Driver driver = GetDriverById(driverId);
+        Loop loop = GetLoopWithId(loopId);
+        Stop stop = GetStopById(stopId);
+        selectedEntry.Update(timestamp, boarded, leftBehind, bus, driver, loop, stop);
         _context.SaveChanges();
     }
 
@@ -184,7 +190,7 @@ public class DatabaseService
 
     public List<Loop> GetAllLoops()
     {
-        return _context.Loops.OrderBy(loop => loop.Id).ToList();
+        return _context.Loops.Include(loop => loop.Routes).OrderBy(loop => loop.Id).ToList();
     }
 
     public void CreateLoop(Loop loop)
@@ -198,7 +204,7 @@ public class DatabaseService
         if(id <= 0) {
             throw new Exception("Loop Id must be greater than zero.");
         }
-        return _context.Loops.Single(loop => loop.Id == id);
+        return _context.Loops.Include(loop => loop.Routes).Single(loop => loop.Id == id);
     }
 
     public void EditLoopWithId(int id, string name)
@@ -215,13 +221,13 @@ public class DatabaseService
         _context.SaveChanges();
     }
 
-    public void AddRouteToLoop(Loop loop, BusShuttleModel.Route route)
+    public void AddRouteToLoop(Loop loop, BusRoute route)
     {
         loop.Routes.Add(route);
         _context.SaveChanges();
     }
 
-    public void RemoveRouteFromLoop(Loop loop, BusShuttleModel.Route route)
+    public void RemoveRouteFromLoop(Loop loop, BusRoute route)
     {
         loop.Routes.Remove(route);
         _context.SaveChanges();

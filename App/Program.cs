@@ -82,7 +82,7 @@ public class Program
         );
         app.MapControllerRoute(
             name: "Loop Driver",
-            pattern: "{controller}/{action=Index}/{busId}/{loopId}",
+            pattern: "{controller}/{action=Index}",
             defaults: new { controller = "Driver"}
         );
         app.MapRazorPages();

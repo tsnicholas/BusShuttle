@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Web;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -26,7 +27,7 @@ public class HomeController : Controller
         {
             return RedirectToAction("Manager");
         }
-        return RedirectToAction("Driver");
+        return RedirectToAction("SignInToLoop", "Driver");
     }
     
     [Authorize(Roles = "Manager")]
@@ -35,12 +36,21 @@ public class HomeController : Controller
         return View();
     }
 
+    [HttpPost]
+    [ValidateAntiForgeryToken]
     [Authorize("IsActivated")]
-    public IActionResult Driver()
+    public async Task<IActionResult> Driver(DriverHomeModel model)
     {
-        List<Bus> buses = _database.GetAllBuses();
-        List<BusShuttleModel.Loop> loops = _database.GetAllLoops();
-        return View(DriverHomeModel.FromLists(loops, buses));
+        if(!ModelState.IsValid)
+        {
+            return RedirectToAction("Index", "BusManager");
+        }
+        var routeDictionary = new RouteValueDictionary();
+        await Task.Run(() => {
+            routeDictionary.Add("busId", model.BusId);
+            routeDictionary.Add("loopId", model.LoopId);
+        });
+        return RedirectToAction("Index", "BusManager");
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

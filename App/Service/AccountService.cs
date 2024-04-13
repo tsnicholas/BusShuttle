@@ -1,4 +1,5 @@
 using System;
+using System.Web;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -52,6 +53,11 @@ public class AccountService : IAccountService
         var previousClaim = userClaims.Single(claim => claim.Type == "activated");
         var newClaim = new Claim("activated", IsActivated.ToString());
         await _userManager.ReplaceClaimAsync(user, previousClaim, newClaim);
+    }
+
+    public async Task<string> GetCurrentEmail(ClaimsPrincipal securityInformation) {
+        var user = await _userManager.GetUserAsync(securityInformation);
+        return await _userManager.GetEmailAsync(user);
     }
 
     private IUserEmailStore<IdentityUser> GetEmailStore()

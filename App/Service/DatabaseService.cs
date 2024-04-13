@@ -27,6 +27,9 @@ public class DatabaseService
 
     public Bus GetBusById(int id)
     {
+        if(id <= 0) {
+            throw new Exception("Bus Id must be greater than zero.");
+        }
         return _context.Buses.Single(bus => bus.Id == id);
     }
 
@@ -60,6 +63,11 @@ public class DatabaseService
     public Driver GetDriverById(int id)
     {
         return _context.Drivers.Single(driver => driver.Id == id);
+    }
+
+    public Driver GetDriverByEmail(string email)
+    {
+        return _context.Drivers.Single(driver => driver.Email == email);
     }
 
     public void EditDriverById(int id, string firstName, string lastName)
@@ -187,6 +195,9 @@ public class DatabaseService
 
     public Loop GetLoopWithId(int id)
     {
+        if(id <= 0) {
+            throw new Exception("Loop Id must be greater than zero.");
+        }
         return _context.Loops.Single(loop => loop.Id == id);
     }
 

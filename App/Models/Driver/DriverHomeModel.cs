@@ -1,23 +1,26 @@
-#nullable disable
-
+using System.ComponentModel.DataAnnotations;
 using BusShuttleModel;
 namespace App.Models.Driver;
 
 public class DriverHomeModel
 {
-    public List<Loop> Loops { get; set; }
-    public Loop SelectedLoop { get; set; }
-    public List<Bus> Buses { get; set; }
-    public Bus SelectedBus { get; set; }
+    [Required]
+    public List<Loop> Loops { get; set; } = new();
+    [Required]
+    public List<Bus> Buses { get; set; } = new();
+    [Required]
+    [Range(1, int.MaxValue, ErrorMessage = "Please enter a valid Loop Id.")]
+    public int LoopId { get; set; } = -1;
+    [Required]
+    [Range(1, int.MaxValue, ErrorMessage = "Please enter a valid Bus Id.")]
+    public int BusId { get; set; } = -1;
 
-    public static DriverHomeModel FromLists(List<Loop> loops, List<Bus> buses)
+    public static DriverHomeModel CreateUsingLists(List<Loop> loops, List<Bus> buses)
     {
         return new DriverHomeModel
         {
             Loops = loops,
-            SelectedLoop = loops[0],
-            Buses = buses,
-            SelectedBus = buses[0]
+            Buses = buses
         };
     }
 }

@@ -28,22 +28,19 @@ public class DriverController : Controller
         string email = await _accountService.GetCurrentEmail(HttpContext.User);
         var driver = _database.GetDriverByEmail(email);
         var bus = _database.GetBusById(busId);
-        var loop = _database.GetLoopWithId(loopId);
+        var loop = _database.GetLoopWithStopsById(loopId);
         List<Stop> stops = GenerateStopList(loop);
         return View(LoopEntryModel.CreateModel(driver, bus, loop, stops));
     }
 
     private List<Stop> GenerateStopList(Loop loop)
     {
-        List<Stop> allStops = _database.GetAllStops();
-        List<Stop> loopStops = new List<Stop>();
+        List<Stop> output = new List<Stop>();
         foreach(var route in loop.Routes)
         {
-            var stop = route.Stop;
-            if(stop == null) continue;
-            loopStops.Add(stop);
+            output.Add(route.Stop);
         }
-        return loopStops;
+        return output;
     }
 
     [HttpGet]

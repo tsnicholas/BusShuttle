@@ -209,6 +209,16 @@ public class DatabaseService
         return _context.Loops.Include(loop => loop.Routes).Include(loop => loop.Entries).Single(loop => loop.Id == id);
     }
 
+    public Loop GetLoopWithStopsById(int id)
+    {
+        if(id <= 0) {
+            throw new Exception("Loop Id must be greater than zero.");
+        }
+        return _context.Loops.Include(loop => loop.Entries).Include(loop => loop.Routes)
+            .ThenInclude(route => route.Stop).Single(loop => loop.Id == id);
+    }
+
+
     public void EditLoopWithId(int id, string name)
     {
         Loop selectedLoop = GetLoopWithId(id);

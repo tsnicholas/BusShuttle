@@ -80,6 +80,7 @@ public class LoopManagerController : Controller
         if(route == null) return View(model);
         await Task.Run(() => {
             Loop loop = _database.GetLoopWithId(model.LoopId);
+            route.SetLoop(loop);
             _database.AddRouteToLoop(loop, route);
         });
         return RedirectToAction("Index");

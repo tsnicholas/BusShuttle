@@ -2,16 +2,19 @@
 
 using System.ComponentModel.DataAnnotations;
 using BusShuttleModel;
-namespace App.Models.Driver;
+namespace App.Models.DriverModels;
 
 public class LoopEntryModel
 {
-    [Required]
-    public BusShuttleModel.Driver BusDriver { get; set; }
-    [Required]
-    public Bus TheBus { get; set; }
-    [Required]
-    public Loop BusLoop { get; set; }
+    [Required(ErrorMessage = "Your Driver Id is missing.")]
+    [Range(1, int.MaxValue, ErrorMessage = "Driver Id is invalid.")]
+    public int DriverId { get; set; } = 1;
+    [Required(ErrorMessage = "Your Bus Id is missing")]
+    [Range(1, int.MaxValue, ErrorMessage = "Bus Id is invalid.")]
+    public int BusId { get; set; } = 1;
+    [Required(ErrorMessage = "Your Loop Id is missing")]
+    [Range(1, int.MaxValue, ErrorMessage = "Loop Id is invalid.")]
+    public int LoopId { get; set; } = 1;
     public List<Stop> Stops { get; set; } = new();
     [Required]
     [Range(1, int.MaxValue, ErrorMessage = "Please enter a valid Stop Id.")]
@@ -22,14 +25,14 @@ public class LoopEntryModel
     [Required]
     [Range(0, int.MaxValue, ErrorMessage = "Please enter a positive integer.")]
     public int LeftBehind { get; set; } = 0;
-
-    public static LoopEntryModel CreateModel(BusShuttleModel.Driver driver, Bus bus, Loop loop, List<Stop> stops)
+    
+    public static LoopEntryModel CreateModel(Driver driver, Bus bus, Loop loop, List<Stop> stops)
     {
         return new LoopEntryModel
         {
-            BusDriver = driver,
-            TheBus = bus,
-            BusLoop = loop,
+            DriverId = driver.Id,
+            BusId = bus.Id,
+            LoopId = loop.Id,
             Stops = stops
         };
     }

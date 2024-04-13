@@ -69,6 +69,10 @@ public class DatabaseService
 
     public Driver GetDriverByEmail(string email)
     {
+        if(email == null)
+        {
+            throw new Exception("Email is null.");
+        }
         return _context.Drivers.Include(driver => driver.Entries).Single(driver => driver.Email == email);
     }
 
@@ -217,7 +221,6 @@ public class DatabaseService
         return _context.Loops.Include(loop => loop.Entries).Include(loop => loop.Routes)
             .ThenInclude(route => route.Stop).Single(loop => loop.Id == id);
     }
-
 
     public void EditLoopWithId(int id, string name)
     {

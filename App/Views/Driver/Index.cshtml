@@ -1,32 +1,27 @@
-@model App.Models.Driver.LoopEntryModel;
+@using BusShuttleModel
+@model App.Models.DriverModels.DriverHomeModel;
 @{
-    ViewData["Title"] = "Loop";
+    ViewData["Title"] = "Driver Home";
 }
 
-<form asp-action="SubmitEntry" method="POST">
-    <input type="hidden" asp-for="BusDriver" />
-    <input type="hidden" asp-for="TheBus" />
-    <input type="hidden" asp-for="BusLoop" />
+<form asp-action="Index" method="POST">
     <div class="form-group">
-        <select asp-for="StopId" class="form-control">
-            @foreach(var stop in Model.Stops)
+        <select asp-for="LoopId" class="form-control">
+            @foreach(var loop in Model.Loops)
             {
-                <option value="@stop.Id">@stop.Name</option>
+                <option value="@loop.Id">@loop.Name</option>
             }
         </select>
     </div>
     <div class="form-group">
-        <label asp-for="Boarded" class="control-label"></label>
-        <input asp-for="Boarded" class="form-control" />
-        <span asp-validation-for="Boarded" class="text-danger"></span>
+        <select asp-for="BusId" class="form-control">
+            @foreach(var bus in Model.Buses)
+            {
+                <option value="@bus.Id">@bus.BusNumber</option>
+            }
+        </select>
     </div>
     <div class="form-group">
-        <label asp-for="LeftBehind" class="control-label"></label>
-        <input asp-for="LeftBehind" class="form-control" />
-        <span asp-validation-for="LeftBehind" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <input type="submit" value="Submit Entry" class="btn btn-primary" />
+        <input type="submit" value="Select" class="btn btn-primary" />
     </div>
 </form>
-<p>Route Count: @Model.BusLoop.Routes.Count()</p>

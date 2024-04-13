@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using App.Service;
 using App.Models;
-using App.Models.Driver;
+using App.Models.DriverModels;
 using BusShuttleModel;
 namespace App.Controllers;
 
@@ -27,7 +27,7 @@ public class HomeController : Controller
         {
             return RedirectToAction("Manager");
         }
-        return RedirectToAction("SignInToLoop", "Driver");
+        return RedirectToAction("Index", "Driver");
     }
     
     [Authorize(Roles = "Manager")]

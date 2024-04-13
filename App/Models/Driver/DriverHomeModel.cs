@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using BusShuttleModel;
-namespace App.Models.Driver;
+namespace App.Models.DriverModels;
 
 public class DriverHomeModel
 {

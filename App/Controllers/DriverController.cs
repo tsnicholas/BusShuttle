@@ -3,7 +3,7 @@ using System.Web;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using App.Models;
-using App.Models.Driver;
+using App.Models.DriverModels;
 using App.Service;
 using BusShuttleModel;
 namespace App.Controllers;
@@ -23,12 +23,36 @@ public class DriverController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> Index([FromQuery] int busId, [FromQuery] int loopId)
+    public IActionResult Index()
+    {
+        List<Loop> loops = _database.GetAllLoops();
+        List<Bus> buses = _database.GetAllBuses();
+        return View(DriverHomeModel.CreateUsingLists(loops, buses));
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Index(DriverHomeModel model)
+    {
+        if(!ModelState.IsValid)
+        {
+            return View(model);
+        }
+        var routeDictionary = new RouteValueDictionary();
+        await Task.Run(() => {
+            routeDictionary.Add("busId", model.BusId);
+            routeDictionary.Add("loopId", model.LoopId);
+        });
+        return RedirectToAction("EntryForm", routeDictionary);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> EntryForm([FromQuery] int busId, [FromQuery] int loopId)
     {
         string email = await _accountService.GetCurrentEmail(HttpContext.User);
-        var driver = _database.GetDriverByEmail(email);
-        var bus = _database.GetBusById(busId);
-        var loop = _database.GetLoopWithStopsById(loopId);
+        Driver driver = _database.GetDriverByEmail(email);
+        Bus bus = _database.GetBusById(busId);
+        Loop loop = _database.GetLoopWithStopsById(loopId);
         List<Stop> stops = GenerateStopList(loop);
         return View(LoopEntryModel.CreateModel(driver, bus, loop, stops));
     }
@@ -43,49 +67,32 @@ public class DriverController : Controller
         return output;
     }
 
-    [HttpGet]
-    public IActionResult SignInToLoop()
-    {
-        List<Loop> loops = _database.GetAllLoops();
-        List<Bus> buses = _database.GetAllBuses();
-        return View(DriverHomeModel.CreateUsingLists(loops, buses));
-    }
-
     [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> SignInToLoop(DriverHomeModel model)
+    public async Task<IActionResult> EntryForm([Bind("DriverId,BusId,LoopId,StopId,Boarded,LeftBehind")]LoopEntryModel model)
     {
-        if(!ModelState.IsValid)
-        {
-            return View(model);
-        }
-        var routeDictionary = new RouteValueDictionary();
-        await Task.Run(() => {
-            routeDictionary.Add("busId", model.BusId);
-            routeDictionary.Add("loopId", model.LoopId);
-        });
-        return RedirectToAction("Index", routeDictionary);
-    }
-
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> SubmitEntry(LoopEntryModel model)
-    {
-        if(!ModelState.IsValid)
-        {
-            return View(model);
-        }
         var routeParams = new RouteValueDictionary();
         await Task.Run(() => {
+            routeParams.Add("busId", model.BusId);
+            routeParams.Add("loopId", model.LoopId);
+        });
+        if(!ModelState.IsValid)
+        {
+            return View(model);
+        }
+        await Task.Run(() => {
+            Driver driver = _database.GetDriverById(model.DriverId);
+            Bus bus = _database.GetBusById(model.BusId);
+            Loop loop = _database.GetLoopWithId(model.LoopId);
             Stop selectedStop = _database.GetStopById(model.StopId);
             int nextId = _database.GetAllEntries().Count() + 1;
-            Entry newEntry = new Entry(nextId, model.Boarded, model.LeftBehind, model.TheBus, 
-                model.BusDriver, model.BusLoop, selectedStop);
+            Entry newEntry = new Entry(nextId, model.Boarded, model.LeftBehind, bus, driver, loop, selectedStop);
+            bus.AddEntry(newEntry);
+            driver.AddEntry(newEntry);
+            loop.AddEntry(newEntry);
+            selectedStop.AddEntry(newEntry);
             _database.CreateEntry(newEntry);
-             routeParams.Add("busId", model.TheBus.Id);
-            routeParams.Add("loopId", model.BusLoop.Id);
         });
-        return RedirectToAction("Index", routeParams);
+        return View(model);
     }
     
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

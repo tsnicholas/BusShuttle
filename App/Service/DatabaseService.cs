@@ -18,7 +18,7 @@ public class DatabaseService
 
     public List<Bus> GetAllBuses()
     {
-        return _context.Buses.OrderBy(bus => bus.Id).ToList();
+        return _context.Buses.Include(bus => bus.Entries).OrderBy(bus => bus.Id).ToList();
     }
 
     public void CreateBus(Bus bus)
@@ -32,7 +32,7 @@ public class DatabaseService
         if(id <= 0) {
             throw new Exception("Bus Id must be greater than zero.");
         }
-        return _context.Buses.Single(bus => bus.Id == id);
+        return _context.Buses.Include(bus => bus.Entries).Single(bus => bus.Id == id);
     }
 
     public void EditBusById(int id, int busNumber)
@@ -53,7 +53,7 @@ public class DatabaseService
 
     public List<Driver> GetAllDrivers()
     {
-        return _context.Drivers.OrderBy(driver => driver.Id).ToList();
+        return _context.Drivers.Include(driver => driver.Entries).OrderBy(driver => driver.Id).ToList();
     }
 
     public void CreateDriver(Driver driver)
@@ -64,12 +64,12 @@ public class DatabaseService
 
     public Driver GetDriverById(int id)
     {
-        return _context.Drivers.Single(driver => driver.Id == id);
+        return _context.Drivers.Include(driver => driver.Entries).Single(driver => driver.Id == id);
     }
 
     public Driver GetDriverByEmail(string email)
     {
-        return _context.Drivers.Single(driver => driver.Email == email);
+        return _context.Drivers.Include(driver => driver.Entries).Single(driver => driver.Email == email);
     }
 
     public void EditDriverById(int id, string firstName, string lastName)
@@ -90,7 +90,7 @@ public class DatabaseService
 
     public List<BusRoute> GetAllRoutes()
     {
-        return _context.Routes.OrderBy(route => route.Id).ToList();
+        return _context.Routes.Include(route => route.Stop).Include(route => route.Loop).OrderBy(route => route.Id).ToList();
     }
 
     public void CreateRoute(BusRoute route)
@@ -101,7 +101,7 @@ public class DatabaseService
 
     public BusRoute GetRouteById(int id)
     {
-        return _context.Routes.Single(route => route.Id == id);
+        return _context.Routes.Include(route => route.Stop).Include(route => route.Loop).Single(route => route.Id == id);
     }
 
     public void EditRouteById(int id, int order)
@@ -122,7 +122,7 @@ public class DatabaseService
 
     public List<Stop> GetAllStops()
     {
-        return _context.Stops.OrderBy(stop => stop.Id).ToList();
+        return _context.Stops.Include(stop => stop.Route).Include(stop => stop.Entries).OrderBy(stop => stop.Id).ToList();
     }
 
     public void CreateStop(Stop stop)
@@ -133,7 +133,7 @@ public class DatabaseService
 
     public Stop GetStopById(int id)
     {
-        return _context.Stops.Single(stop => stop.Id == id);
+        return _context.Stops.Include(stop => stop.Route).Include(stop => stop.Entries).Single(stop => stop.Id == id);
     }
 
     public void EditStopById(int id, string name, double latitude, double longitude)
@@ -154,7 +154,8 @@ public class DatabaseService
 
     public List<Entry> GetAllEntries()
     {
-        return _context.Entries.OrderBy(entry => entry.Id).ToList();
+        return _context.Entries.Include(entry => entry.Bus).Include(entry => entry.Driver)
+            .Include(entry => entry.Loop).Include(entry => entry.Stop).OrderBy(entry => entry.Id).ToList();
     }
 
     public void CreateEntry(Entry entry)
@@ -165,7 +166,8 @@ public class DatabaseService
 
     public Entry GetEntryWithId(int id)
     {
-        return _context.Entries.Single(entry => entry.Id == id); 
+        return _context.Entries.Include(entry => entry.Bus).Include(entry => entry.Driver)
+            .Include(entry => entry.Loop).Include(entry => entry.Stop).Single(entry => entry.Id == id); 
     }
 
     public void EditEntryWithId(int id, DateTime timestamp, int boarded, int leftBehind, int busId, int driverId, int loopId, int stopId)
@@ -190,7 +192,7 @@ public class DatabaseService
 
     public List<Loop> GetAllLoops()
     {
-        return _context.Loops.Include(loop => loop.Routes).OrderBy(loop => loop.Id).ToList();
+        return _context.Loops.Include(loop => loop.Routes).Include(loop => loop.Entries).OrderBy(loop => loop.Id).ToList();
     }
 
     public void CreateLoop(Loop loop)
@@ -204,7 +206,7 @@ public class DatabaseService
         if(id <= 0) {
             throw new Exception("Loop Id must be greater than zero.");
         }
-        return _context.Loops.Include(loop => loop.Routes).Single(loop => loop.Id == id);
+        return _context.Loops.Include(loop => loop.Routes).Include(loop => loop.Entries).Single(loop => loop.Id == id);
     }
 
     public void EditLoopWithId(int id, string name)

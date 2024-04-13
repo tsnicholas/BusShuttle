@@ -18,6 +18,11 @@ public class Bus
         BusNumber = busNumber;
     }
 
+    public void AddEntry(Entry entry)
+    {
+        Entries.Add(entry);
+    }
+
     public void Update(int newBusNumber)
     {
         BusNumber = newBusNumber;
@@ -44,6 +49,11 @@ public class Driver
         FirstName = firstName;
         LastName = lastName;
         Email = email;
+    }
+
+    public void AddEntry(Entry entry)
+    {
+        Entries.Add(entry);
     }
 
     public void Update(string newFirstName, string newLastName)
@@ -77,6 +87,16 @@ public class Stop
         Longitude = longitude;
     }
 
+    public void SetRoute(BusRoute route)
+    {
+        Route = route;
+    }
+
+    public void AddEntry(Entry entry)
+    {
+        Entries.Add(entry);
+    }
+
     public void Update(string newName, double newLatitude, double newLongitude)
     {
         Name = newName;
@@ -97,10 +117,19 @@ public class BusRoute
     public Stop Stop { get; set; }
     public Loop? Loop { get; set; }
 
-    public BusRoute(int id, int order)
+    public BusRoute() {}
+
+    public BusRoute(int id, int order, Stop stop)
     {
         Id = id;
         Order = order;
+        Stop = stop;
+        StopId = stop.Id;
+    }
+
+    public void SetLoop(Loop loop)
+    {
+        Loop = loop;
     }
 
     public void Update(int newOrder)
@@ -116,7 +145,7 @@ public class Loop
     [Required]
     public string Name { get; set; }
     public List<BusRoute> Routes { get; set; } = new();
-    public List<Entry>? Entries { get; set; }
+    public List<Entry> Entries { get; set; } = new();
     
     public Loop() {}
     
@@ -124,6 +153,11 @@ public class Loop
     {
         Id = id;
         Name = name;
+    }
+
+    public void AddEntry(Entry entry)
+    {
+        Entries.Add(entry);
     }
 
     public void Update(string name)

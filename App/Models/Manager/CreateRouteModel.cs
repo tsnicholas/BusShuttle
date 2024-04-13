@@ -10,13 +10,18 @@ public class CreateRouteModel
     public int Id { get; set; }
     [Required]
     public int Order { get; set; }
+    [Required]
+    public List<Stop> Stops { get; set; } = new();
+    [Required]
+    public int StopId { get; set; } = 1;
 
-    public static CreateRouteModel CreateRoute(int id)
+    public static CreateRouteModel CreateRoute(int id, List<Stop> stops)
     {
         return new CreateRouteModel
         {
             Id = id,
-            Order = -1
+            Order = -1,
+            Stops = stops
         };
     }
 }

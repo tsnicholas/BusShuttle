@@ -28,15 +28,28 @@ public class RouteManagerController : Controller
     [HttpGet]
     public IActionResult CreateRoute()
     {
-        return View(CreateRouteModel.CreateRoute(_database.GetAllRoutes().Count() + 1));
+        List<Stop> stops = _database.GetAllStops();
+        foreach(var stop in stops)
+        {
+            if(stop.Route != null)
+            {
+                stops.Remove(stop);
+            }
+        }
+        return View(CreateRouteModel.CreateRoute(_database.GetAllRoutes().Count() + 1, stops));
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> CreateRoute([Bind("Id,Order")] CreateRouteModel route)
+    public async Task<IActionResult> CreateRoute([Bind("Id,Order,StopId")] CreateRouteModel createdRoute)
     {
-        if(!ModelState.IsValid) return View(route);
-        await Task.Run(() => _database.CreateRoute(new BusRoute(route.Id, route.Order)));
+        if(!ModelState.IsValid) return View(createdRoute);
+        await Task.Run(() => {
+            Stop stop = _database.GetStopById(createdRoute.StopId);
+            BusRoute newRoute = new BusRoute(createdRoute.Id, createdRoute.Order, stop);
+            stop.SetRoute(newRoute);
+            _database.CreateRoute(newRoute);
+        });
         return RedirectToAction("Index");
     }
 

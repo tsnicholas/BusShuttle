@@ -13,27 +13,29 @@ public class DriverManagerController : Controller
 {
     private readonly ILogger<DriverManagerController> _logger;
     private readonly IAccountService _accountService;
-    private readonly DatabaseService _database;
+    private readonly IDatabaseService _database;
 
     public DriverManagerController(
         ILogger<DriverManagerController> logger,
-        IAccountService accountService)
+        IAccountService accountService,
+        IDatabaseService database
+    )
     {
         _logger = logger;
         _accountService = accountService;
-        _database = new DatabaseService();
+        _database = database;
     }
 
     [HttpGet]
     public IActionResult Index()
     {
-        return View(_database.GetAllDrivers().Select(driver => DriverViewModel.FromDriver(driver)));
+        return View(_database.GetAll<Driver>().Select(driver => DriverViewModel.FromDriver(driver)));
     }
 
     [HttpGet]
     public IActionResult CreateDriver()
     {
-        return View(CreateDriverModel.CreateDriver(_database.GetAllDrivers().Count() + 1));
+        return View(CreateDriverModel.CreateDriver(_database.GetAll<Driver>().Count() + 1));
     }
 
     [HttpPost]
@@ -50,7 +52,7 @@ public class DriverManagerController : Controller
             }
             return View(driver);
         }
-        await Task.Run(() => _database.CreateDriver(new Driver(driver.Id, driver.FirstName, driver.LastName, driver.Email)));
+        await Task.Run(() => _database.CreateEntity<Driver>(new Driver(driver.Id, driver.FirstName, driver.LastName, driver.Email)));
         return RedirectToAction("Index");
     }
 
@@ -64,7 +66,7 @@ public class DriverManagerController : Controller
     [HttpGet]
     public IActionResult EditDriver([FromRoute] int id)
     {
-        Driver selectedDriver = _database.GetDriverById(id);
+        Driver selectedDriver = _database.GetById<Driver>(id);
         return View(EditDriverModel.FromDriver(selectedDriver));
     }
 
@@ -73,7 +75,10 @@ public class DriverManagerController : Controller
     public async Task<IActionResult> EditDriver(EditDriverModel editDriverModel)
     {
         if(!ModelState.IsValid) return View(editDriverModel);
-        await Task.Run(() => _database.EditDriverById(editDriverModel.Id, editDriverModel.FirstName, editDriverModel.LastName));
+        await Task.Run(() => {
+            Driver updatedDriver = new Driver(editDriverModel.Id, editDriverModel.FirstName, editDriverModel.LastName, editDriverModel.Email);
+            _database.UpdateById<Driver>(editDriverModel.Id, updatedDriver);
+        });
         return RedirectToAction("Index");
     }
 
@@ -87,7 +92,7 @@ public class DriverManagerController : Controller
     public async Task<IActionResult> DeleteDriver(DeleteDriverModel deleteDriverModel)
     {
         if(!ModelState.IsValid) return View(deleteDriverModel);
-        await Task.Run(() => _database.DeleteDriverById(deleteDriverModel.Id));
+        await Task.Run(() => _database.DeleteById<Driver>(deleteDriverModel.Id));
         return RedirectToAction("Index");
     }
 

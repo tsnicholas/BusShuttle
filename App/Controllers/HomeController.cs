@@ -13,12 +13,10 @@ namespace App.Controllers;
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
-    private readonly DatabaseService _database;
     
     public HomeController(ILogger<HomeController> logger)
     {
         _logger = logger;
-        _database = new DatabaseService();
     }
 
     public IActionResult Index()

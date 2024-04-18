@@ -32,14 +32,16 @@ namespace App.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<IdentityUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
-        private readonly DatabaseService _database;
+        private readonly IDatabaseService _database;
 
         public RegisterModel(
             UserManager<IdentityUser> userManager,
             IUserStore<IdentityUser> userStore,
             SignInManager<IdentityUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            IDatabaseService database
+        )
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -47,7 +49,7 @@ namespace App.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
-            _database = new DatabaseService();
+            _database = database;
         }
 
         /// <summary>
@@ -136,8 +138,8 @@ namespace App.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
-                    int newId = _database.GetAllDrivers().Count() + 1;
-                    await Task.Run(() => _database.CreateDriver(new Driver(newId, Input.FirstName, Input.LastName, Input.Email)));
+                    int newId = _database.GetAll<Driver>().Count() + 1;
+                    await Task.Run(() => _database.CreateEntity<Driver>(new Driver(newId, Input.FirstName, Input.LastName, Input.Email)));
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     return LocalRedirect(returnUrl);
                 }

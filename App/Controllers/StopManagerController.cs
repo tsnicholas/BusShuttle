@@ -10,25 +10,25 @@ namespace App.Controllers;
 [Authorize(Roles = "Manager")]
 public class StopManagerController : Controller
 {
-    public readonly ILogger<StopManagerController> _logger;
-    public readonly DatabaseService _database;
+    private readonly ILogger<StopManagerController> _logger;
+    private readonly IDatabaseService _database;
 
-    public StopManagerController(ILogger<StopManagerController> logger)
+    public StopManagerController(ILogger<StopManagerController> logger, IDatabaseService database)
     {
         _logger = logger;
-        _database = new DatabaseService();
+        _database = database;
     }
 
     [HttpGet]
     public IActionResult Index()
     {
-        return View(_database.GetAllStops().Select(stop => StopViewModel.FromStop(stop)));
+        return View(_database.GetAll<Stop>().Select(stop => StopViewModel.FromStop(stop)));
     }
 
     [HttpGet]
     public IActionResult CreateStop()
     {
-        return View(CreateStopModel.CreateStop(_database.GetAllStops().Count() + 1));
+        return View(CreateStopModel.CreateStop(_database.GetAll<Stop>().Count() + 1));
     }
 
     [HttpPost]
@@ -36,14 +36,14 @@ public class StopManagerController : Controller
     public async Task<IActionResult> CreateStop([Bind("Id,Name,Latitude,Longitude")] CreateStopModel stop)
     {
         if(!ModelState.IsValid) return View(stop);
-        await Task.Run(() => _database.CreateStop(new Stop(stop.Id, stop.Name, stop.Latitude, stop.Longitude)));
+        await Task.Run(() => _database.CreateEntity<Stop>(new Stop(stop.Id, stop.Name, stop.Latitude, stop.Longitude)));
         return RedirectToAction("Index");
     }
 
     [HttpGet]
     public IActionResult EditStop([FromRoute] int id)
     {
-        Stop selectedStop = _database.GetStopById(id);
+        Stop selectedStop = _database.GetById<Stop>(id);
         return View(EditStopModel.FromStop(selectedStop));
     }
 
@@ -52,7 +52,10 @@ public class StopManagerController : Controller
     public async Task<IActionResult> EditStop(EditStopModel editStopModel)
     {
         if(!ModelState.IsValid) return View(editStopModel);
-        await Task.Run(() => _database.EditStopById(editStopModel.Id, editStopModel.Name, editStopModel.Latitude, editStopModel.Longitude));
+        await Task.Run(() => {
+            Stop updatedStop = new Stop(editStopModel.Id, editStopModel.Name, editStopModel.Longitude, editStopModel.Latitude);
+            _database.UpdateById<Stop>(editStopModel.Id, updatedStop);
+        });
         return RedirectToAction("Index");
     }
 
@@ -66,7 +69,7 @@ public class StopManagerController : Controller
     public async Task<IActionResult> DeleteStop(DeleteStopModel deleteStopModel)
     {
         if(!ModelState.IsValid) return View(deleteStopModel);
-        await Task.Run(() => _database.DeleteStopById(deleteStopModel.Id));
+        await Task.Run(() => _database.DeleteById<Stop>(deleteStopModel.Id));
         return RedirectToAction("Index");
     }
 

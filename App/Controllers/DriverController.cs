@@ -12,21 +12,21 @@ namespace App.Controllers;
 public class DriverController : Controller
 {
     private readonly ILogger<DriverController> _logger;
-    private readonly DatabaseService _database;
+    private readonly IDatabaseService _database;
     private readonly IAccountService _accountService;
 
-    public DriverController(ILogger<DriverController> logger, IAccountService accountService)
+    public DriverController(ILogger<DriverController> logger, IAccountService accountService, IDatabaseService database)
     {
         _logger = logger;
         _accountService = accountService;
-        _database = new DatabaseService();
+        _database = database;
     }
 
     [HttpGet]
     public IActionResult Index()
     {
-        List<Loop> loops = _database.GetAllLoops();
-        List<Bus> buses = _database.GetAllBuses();
+        List<Loop> loops = _database.GetAll<Loop>();
+        List<Bus> buses = _database.GetAll<Bus>();
         return View(DriverHomeModel.CreateUsingLists(loops, buses));
     }
 
@@ -51,7 +51,7 @@ public class DriverController : Controller
     {
         string email = await _accountService.GetCurrentEmail(HttpContext.User);
         Driver driver = _database.GetDriverByEmail(email);
-        Bus bus = _database.GetBusById(busId);
+        Bus bus = _database.GetById<Bus>(busId);
         Loop loop = _database.GetLoopWithStopsById(loopId);
         List<Stop> stops = GenerateStopList(loop);
         return View(LoopEntryModel.CreateModel(driver, bus, loop, stops));
@@ -62,7 +62,7 @@ public class DriverController : Controller
         List<Stop> output = new List<Stop>();
         foreach(var route in loop.Routes)
         {
-            output.Add(route.Stop);
+            output.Add(route.Stop ?? throw new InvalidOperationException());
         }
         return output;
     }
@@ -80,17 +80,13 @@ public class DriverController : Controller
             return View(model);
         }
         await Task.Run(() => {
-            Driver driver = _database.GetDriverById(model.DriverId);
-            Bus bus = _database.GetBusById(model.BusId);
-            Loop loop = _database.GetLoopWithId(model.LoopId);
-            Stop selectedStop = _database.GetStopById(model.StopId);
-            int nextId = _database.GetAllEntries().Count() + 1;
-            Entry newEntry = new Entry(nextId, model.Boarded, model.LeftBehind, bus, driver, loop, selectedStop);
-            bus.AddEntry(newEntry);
-            driver.AddEntry(newEntry);
-            loop.AddEntry(newEntry);
-            selectedStop.AddEntry(newEntry);
-            _database.CreateEntry(newEntry);
+            int nextId = _database.GetAll<Entry>().Count() + 1;
+            Entry newEntry = new Entry(nextId, model.Boarded, model.LeftBehind);
+            newEntry.SetBus(_database.GetById<Bus>(model.BusId));
+            newEntry.SetDriver(_database.GetById<Driver>(model.DriverId));
+            newEntry.SetLoop(_database.GetById<Loop>(model.LoopId));
+            newEntry.SetStop(_database.GetById<Stop>(model.StopId));
+            _database.CreateEntity<Entry>(newEntry);
         });
         return View(model);
     }

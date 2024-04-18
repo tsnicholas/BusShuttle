@@ -1,10 +1,8 @@
-﻿using System;
-using System.IO;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using BusShuttleModel;
 namespace BusShuttleDatabase;
 
-public class BusShuttleContext : DbContext
+public abstract class IBusShuttleContext : DbContext
 {
     public DbSet<Bus> Buses { get; set; }
     public DbSet<Driver> Drivers { get; set; }
@@ -14,10 +12,18 @@ public class BusShuttleContext : DbContext
     public DbSet<Entry> Entries { get; set; }
     public string DbPath { get; }
 
-    public BusShuttleContext() {
+    public IBusShuttleContext() {
         var mainDirectory = Path.GetFullPath("..");
         DbPath = @$"{mainDirectory}\BusShuttleDatabase\BusShuttle.db";
     }
+
+    protected abstract override void OnConfiguring(DbContextOptionsBuilder options);
+    protected abstract override void OnModelCreating(ModelBuilder modelBuilder);
+}
+
+public class BusShuttleContext : IBusShuttleContext
+{
+    public BusShuttleContext(): base() {}
 
     protected override void OnConfiguring(DbContextOptionsBuilder options) => options.UseSqlite($"Data Source={DbPath}");
 

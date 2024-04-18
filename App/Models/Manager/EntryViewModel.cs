@@ -23,10 +23,10 @@ public class EntryViewModel
             Timestamp = entry.Timestamp,
             Boarded = entry.Boarded,
             LeftBehind = entry.LeftBehind,
-            BusId = entry.BusId,
-            DriverId = entry.DriverId,
-            LoopId = entry.LoopId,
-            StopId = entry.StopId
+            BusId = entry.BusId ?? -1,
+            DriverId = entry.DriverId ?? -1,
+            LoopId = entry.LoopId ?? -1,
+            StopId = entry.StopId ?? -1
         };
     }
 }

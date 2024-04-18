@@ -15,15 +15,17 @@ public class EditDriverModel
     [Display(Name = "Last Name")]
     [StringLength(50, MinimumLength = 1, ErrorMessage = "Please enter the last name.")]
     public string LastName { get; set; }
+    [EmailAddress]
+    public string Email { get; set; }
 
     public static EditDriverModel FromDriver(BusShuttleModel.Driver driver)
     {
-
         return new EditDriverModel
         {
             Id = driver.Id,
             FirstName = driver.FirstName,
-            LastName = driver.LastName
+            LastName = driver.LastName,
+            Email = driver.Email
         };
     }
 }

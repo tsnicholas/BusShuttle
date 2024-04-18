@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using App.Data;
 using App.Service;
+using BusShuttleDatabase;
 namespace App;
 
 public class Program
@@ -26,6 +27,8 @@ public class Program
         });
         builder.Services.AddControllersWithViews();
         builder.Services.AddScoped<UserManager<IdentityUser>>();
+        builder.Services.AddScoped<IBusShuttleContext, BusShuttleContext>();
+        builder.Services.AddScoped<IDatabaseService, DatabaseService>();
         builder.Services.AddScoped<IAccountService, AccountService>();
         var app = builder.Build();
 

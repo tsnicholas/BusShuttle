@@ -11,42 +11,39 @@ namespace App.Controllers;
 public class EntryManagerController : Controller
 {
     private readonly ILogger<EntryManagerController> _logger;
-    private readonly DatabaseService _database;
+    private readonly IDatabaseService _database;
 
-    public EntryManagerController(ILogger<EntryManagerController> logger)
+    public EntryManagerController(ILogger<EntryManagerController> logger, IDatabaseService database)
     {
         _logger = logger;
-        _database = new DatabaseService();
+        _database = database;
     }
 
     [HttpGet]
     public IActionResult Index()
     {
-        return View(_database.GetAllEntries().Select(entry => EntryViewModel.FromEntry(entry)));
+        return View(_database.GetAll<Entry>().Select(entry => EntryViewModel.FromEntry(entry)));
     }
 
     [HttpGet]
     public IActionResult CreateEntry()
     {
-        return View(CreateEntryModel.CreateEntry(_database.GetAllEntries().Count() + 1));
+        return View(CreateEntryModel.CreateEntry(_database.GetAll<Entry>().Count() + 1));
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> CreateEntry([Bind("Id,Timestamp,Boarded,LeftBehind,BusId,DriverId,LoopId,StopId")] CreateEntryModel entry)
+    public async Task<IActionResult> CreateEntry(
+        [Bind("Id,Timestamp,Boarded,LeftBehind,BusId,DriverId,LoopId,StopId")] CreateEntryModel entry)
     {
         if(!ModelState.IsValid) return View(entry);
         await Task.Run(() => {
-            Bus bus = _database.GetBusById(entry.BusId);
-            Driver driver = _database.GetDriverById(entry.DriverId);
-            Loop loop = _database.GetLoopWithId(entry.LoopId);
-            Stop stop = _database.GetStopById(entry.StopId);
-            Entry newEntry = new Entry(entry.Id, entry.Boarded, entry.LeftBehind, bus, driver, loop, stop);
-            bus.AddEntry(newEntry);
-            driver.AddEntry(newEntry);
-            loop.AddEntry(newEntry);
-            stop.AddEntry(newEntry);
-            _database.CreateEntry(newEntry);
+            Entry newEntry = new Entry(entry.Id, entry.Boarded, entry.LeftBehind);
+            newEntry.SetBus(_database.GetById<Bus>(entry.BusId));
+            newEntry.SetDriver(_database.GetById<Driver>(entry.DriverId));
+            newEntry.SetLoop(_database.GetById<Loop>(entry.LoopId));
+            newEntry.SetStop(_database.GetById<Stop>(entry.StopId));
+            _database.CreateEntity<Entry>(newEntry);
         });
         return RedirectToAction("Index");
     }
@@ -54,16 +51,23 @@ public class EntryManagerController : Controller
     [HttpGet]
     public IActionResult EditEntry([FromRoute] int id)
     {
-        Entry selectedEntry = _database.GetEntryWithId(id);
+        Entry selectedEntry = _database.GetById<Entry>(id);
         return View(EditEntryModel.FromEntry(selectedEntry));
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> EditEntry(EditEntryModel editEntryModel)
+    public async Task<IActionResult> EditEntry(EditEntryModel viewModel)
     {
-        if(!ModelState.IsValid) return View(editEntryModel);
-        await Task.Run(() => _database.EditEntryWithId(editEntryModel.Id, editEntryModel.Timestamp, editEntryModel.Boarded, editEntryModel.LeftBehind, editEntryModel.BusId, editEntryModel.DriverId, editEntryModel.LoopId, editEntryModel.StopId));
+        if(!ModelState.IsValid) return View(viewModel);
+        await Task.Run(() => {
+            Entry updatedEntry = new Entry(viewModel.Id, viewModel.Boarded, viewModel.LeftBehind);
+            updatedEntry.SetBus(_database.GetById<Bus>(viewModel.BusId));
+            updatedEntry.SetDriver(_database.GetById<Driver>(viewModel.DriverId));
+            updatedEntry.SetLoop(_database.GetById<Loop>(viewModel.LoopId));
+            updatedEntry.SetStop(_database.GetById<Stop>(viewModel.StopId));
+            _database.UpdateById<Entry>(viewModel.Id, updatedEntry);
+        });
         return RedirectToAction("Index");
     }
 
@@ -78,7 +82,7 @@ public class EntryManagerController : Controller
     public async Task<IActionResult> DeleteEntry(DeleteEntryModel deleteEntryModel)
     {
         if(!ModelState.IsValid) return View(deleteEntryModel);
-        await Task.Run(() => _database.DeleteEntryWithId(deleteEntryModel.Id));
+        await Task.Run(() => _database.DeleteById<Entry>(deleteEntryModel.Id));
         return RedirectToAction("Index");
     }
 

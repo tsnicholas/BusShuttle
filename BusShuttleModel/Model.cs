@@ -1,91 +1,65 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 namespace BusShuttleModel;
 
-public class Bus
+public abstract class IBusData(int id) : object
+{
+    [Key] public int Id { get; set; } = id;
+
+    public abstract void Update(IBusData data);
+}
+
+public class Bus(int id, int busNumber) : IBusData(id)
 {
     [Required]
-    public int Id { get; set; }
-    [Required]
-    public int BusNumber { get; set; }
-    public List<Entry>? Entries { get; set; }
-
-    public Bus() {}
-
-    public Bus(int id, int busNumber)
-    {
-        Id = id;
-        BusNumber = busNumber;
-    }
+    public int BusNumber { get; set; } = busNumber;
+    public List<Entry> Entries { get; set; } = [];
 
     public void AddEntry(Entry entry)
     {
         Entries.Add(entry);
     }
 
-    public void Update(int newBusNumber)
+    public override void Update(IBusData data)
     {
-        BusNumber = newBusNumber;
+        Bus updatedBus = data as Bus ?? throw new InvalidOperationException();
+        BusNumber = updatedBus.BusNumber;
     }
 }
 
-public class Driver
+public class Driver(int id, string firstName, string lastName, string email) : IBusData(id)
 {
     [Required]
-    public int Id { get; set; }
+    public string FirstName { get; set; } = firstName;
     [Required]
-    public string FirstName { get; set; }
+    public string LastName { get; set; } = lastName;
     [Required]
-    public string LastName { get; set; }
-    [Required]
-    public string Email { get; set; }
-    public List<Entry>? Entries { get; set; }
-
-    public Driver() {}
-
-    public Driver(int id, string firstName, string lastName, string email)
-    {
-        Id = id;
-        FirstName = firstName;
-        LastName = lastName;
-        Email = email;
-    }
+    public string Email { get; set; } = email;
+    public List<Entry> Entries { get; set; } = [];
 
     public void AddEntry(Entry entry)
     {
         Entries.Add(entry);
     }
 
-    public void Update(string newFirstName, string newLastName)
+    public override void Update(IBusData data)
     {
-        FirstName = newFirstName;
-        LastName = newLastName;
+        Driver updatedDriver = data as Driver ?? throw new InvalidOperationException();
+        FirstName = updatedDriver.FirstName;
+        LastName = updatedDriver.LastName;
     }
 }
 
-public class Stop
+public class Stop(int id, string name, double latitude, double longitude) : IBusData(id)
 {
     [Required]
-    public int Id { get; set; }
+    public string Name { get; set; } = name;
     [Required]
-    public string Name { get; set; }
+    public double Latitude { get; set; } = latitude;
     [Required]
-    public double Latitude { get; set; }
-    [Required]
-    public double Longitude { get; set; }
+    public double Longitude { get; set; } = longitude;
     [Required]
     public BusRoute? Route { get; set; }
-    public List<Entry>? Entries { get; set; }
-
-    public Stop() {}
-
-    public Stop(int id, string name, double latitude, double longitude)
-    {
-        Id = id;
-        Name = name;
-        Latitude = latitude;
-        Longitude = longitude;
-    }
+    public List<Entry> Entries { get; set; } = [];
 
     public void SetRoute(BusRoute route)
     {
@@ -97,127 +71,119 @@ public class Stop
         Entries.Add(entry);
     }
 
-    public void Update(string newName, double newLatitude, double newLongitude)
+    public override void Update(IBusData data)
     {
-        Name = newName;
-        Latitude = newLatitude;
-        Longitude = newLongitude;
+        Stop updatedStop = data as Stop ?? throw new InvalidOperationException();
+        Name = updatedStop.Name;
+        Latitude = updatedStop.Latitude;
+        Longitude = updatedStop.Longitude;
     }
 }
 
-public class BusRoute
+public class BusRoute(int id, int order) : IBusData(id)
 {
     [Required]
-    public int Id { get; set; }
-    [Required]
-    public int Order { get; set; }
+    public int Order { get; set; } = order;
     [Required]
     public int StopId { get; set; }
-    [Required]
-    public Stop Stop { get; set; }
+    public Stop? Stop { get; set; }
     public Loop? Loop { get; set; }
-
-    public BusRoute() {}
-
-    public BusRoute(int id, int order, Stop stop)
-    {
-        Id = id;
-        Order = order;
-        Stop = stop;
-        StopId = stop.Id;
-    }
 
     public void SetLoop(Loop loop)
     {
         Loop = loop;
     }
 
-    public void Update(int newOrder)
+    public void SetStop(Stop stop)
     {
-        Order = newOrder;
+        Stop = stop;
+    }
+
+    public override void Update(IBusData data)
+    {
+        BusRoute updatedRoute = data as BusRoute ?? throw new InvalidOperationException();
+        Order = updatedRoute.Order;
+        Stop = updatedRoute.Stop;
+        StopId = updatedRoute.StopId;
     }
 }
 
-public class Loop
+public class Loop(int id, string name) : IBusData(id)
 {
     [Required]
-    public int Id { get; set; }
-    [Required]
-    public string Name { get; set; }
-    public List<BusRoute> Routes { get; set; } = new();
-    public List<Entry> Entries { get; set; } = new();
-    
-    public Loop() {}
-    
-    public Loop(int id, string name)
-    {
-        Id = id;
-        Name = name;
-    }
+    public string Name { get; set; } = name;
+    public List<BusRoute> Routes { get; set; } = [];
+    public List<Entry> Entries { get; set; } = [];
 
     public void AddEntry(Entry entry)
     {
         Entries.Add(entry);
     }
 
-    public void Update(string name)
+    public override void Update(IBusData data)
     {
-        Name = name;
+        Loop updatedLoop = data as Loop ?? throw new InvalidOperationException();
+        Name = updatedLoop.Name;
     }
 }
 
-public class Entry
+public class Entry(int id, int boarded, int leftBehind) : IBusData(id)
 {
-    [Required]
-    public int Id { get; set; }
     public DateTime Timestamp { get; set; } = DateTime.Now;
-    public int Boarded { get; set; }
-    public int LeftBehind { get; set; }
+    public int Boarded { get; set; } = boarded;
+    public int LeftBehind { get; set; } = leftBehind;
     [Required]
-    public Bus Bus { get; set; }
+    public Bus? Bus { get; set; }
     [Required]
-    public int BusId { get; set; }
+    public int? BusId { get; set; }
     [Required]
-    public Driver Driver { get; set; }
+    public Driver? Driver { get; set; }
     [Required]
-    public int DriverId { get; set; }
+    public int? DriverId { get; set; }
     [Required]
-    public Loop Loop { get; set; }
+    public Loop? Loop { get; set; }
     [Required]
-    public int LoopId { get; set; }
+    public int? LoopId { get; set; }
     [Required]
-    public Stop Stop { get; set; }
+    public Stop? Stop { get; set; }
     [Required]
-    public int StopId { get; set; }
+    public int? StopId { get; set; }
 
-    public Entry() {}
-
-    public Entry(int id, int boarded, int leftBehind, Bus bus, Driver driver, Loop loop, Stop stop)
+    public override void Update(IBusData data)
     {
-        Id = id;
-        Boarded = boarded;
-        LeftBehind = leftBehind;
-        Bus = bus;
-        BusId = bus.Id;
-        Driver = driver;
-        DriverId = driver.Id;
-        Loop = loop;
-        LoopId = loop.Id;
-        Stop = stop;
-        StopId = stop.Id;
+        Entry updatedEntry = data as Entry ?? throw new InvalidOperationException();
+        Boarded = updatedEntry.Boarded;
+        LeftBehind = updatedEntry.LeftBehind;
+        Bus = updatedEntry.Bus;
+        BusId = updatedEntry.BusId;
+        Driver = updatedEntry.Driver;
+        DriverId = updatedEntry.DriverId;
+        Loop = updatedEntry.Loop;
+        LoopId = updatedEntry.LoopId;
+        Stop = updatedEntry.Stop;
+        StopId = updatedEntry.StopId;
     }
 
-    public void Update(DateTime timestamp, int boarded, int leftBehind, Bus bus, Driver driver, Loop loop, Stop stop)
+    public void SetBus(Bus bus)
     {
-        Timestamp = timestamp;
-        Boarded = boarded;
-        LeftBehind = leftBehind;
         Bus = bus;
         BusId = bus.Id;
+    }
+
+    public void SetDriver(Driver driver)
+    {
         Driver = driver;
         DriverId = driver.Id;
+    }
+
+    public void SetLoop(Loop loop)
+    {
         Loop = loop;
         LoopId = loop.Id;
+    }
+
+    public void SetStop(Stop stop)
+    {
         Stop = stop;
         StopId = stop.Id;
     }

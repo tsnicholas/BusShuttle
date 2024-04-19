@@ -2,9 +2,9 @@ using Microsoft.EntityFrameworkCore;
 using BusShuttleModel;
 namespace Database.Service;
 
-public class DatabaseService() : IDatabaseService
+public class DatabaseService(BusShuttleContext context) : IDatabaseService
 {
-    private readonly BusShuttleContext _context = new();
+    private readonly BusShuttleContext _context = context;
 
     public List<T> GetAll<T>(params string[] childrenToInclude) where T : IBusData
     {

@@ -10,16 +10,23 @@ public class BusShuttleContext : DbContext
     public DbSet<Stop> Stops { get; set; }
     public DbSet<Loop> Loops { get; set; }
     public DbSet<Entry> Entries { get; set; }
-    public string DbPath { get; }
+    public string DbPath { get; } = string.Empty;
 
-    public BusShuttleContext() : base() {
+    public BusShuttleContext() : base() 
+    {
         var mainDirectory = Path.GetFullPath("..");
         DbPath = @$"{mainDirectory}\BusShuttleDatabase\BusShuttle.db";
     }
 
     public BusShuttleContext(DbContextOptions options) : base(options) {}
 
-    protected override void OnConfiguring(DbContextOptionsBuilder options) => options.UseSqlite($"Data Source={DbPath}");
+    protected override void OnConfiguring(DbContextOptionsBuilder options)
+    {
+        if(DbPath != string.Empty)
+        {
+            options.UseSqlite($"Data Source={DbPath}");
+        }
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

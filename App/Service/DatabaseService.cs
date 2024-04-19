@@ -9,9 +9,9 @@ namespace App.Service;
 
 public class DatabaseService : IDatabaseService
 {
-    private readonly IBusShuttleContext _context;
+    private readonly BusShuttleContext _context;
 
-    public DatabaseService(IBusShuttleContext context)
+    public DatabaseService(BusShuttleContext context)
     {
         _context = context;
     }

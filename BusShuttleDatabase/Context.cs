@@ -2,7 +2,7 @@
 using BusShuttleModel;
 namespace BusShuttleDatabase;
 
-public abstract class IBusShuttleContext : DbContext
+public class BusShuttleContext : DbContext
 {
     public DbSet<Bus> Buses { get; set; }
     public DbSet<Driver> Drivers { get; set; }
@@ -12,18 +12,12 @@ public abstract class IBusShuttleContext : DbContext
     public DbSet<Entry> Entries { get; set; }
     public string DbPath { get; }
 
-    public IBusShuttleContext() {
+    public BusShuttleContext() : base() {
         var mainDirectory = Path.GetFullPath("..");
         DbPath = @$"{mainDirectory}\BusShuttleDatabase\BusShuttle.db";
     }
 
-    protected abstract override void OnConfiguring(DbContextOptionsBuilder options);
-    protected abstract override void OnModelCreating(ModelBuilder modelBuilder);
-}
-
-public class BusShuttleContext : IBusShuttleContext
-{
-    public BusShuttleContext(): base() {}
+    public BusShuttleContext(DbContextOptions options) : base(options) {}
 
     protected override void OnConfiguring(DbContextOptionsBuilder options) => options.UseSqlite($"Data Source={DbPath}");
 

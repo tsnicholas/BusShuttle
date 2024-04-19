@@ -57,13 +57,13 @@ public class Stop(int id, string name, double latitude, double longitude) : IBus
     public double Latitude { get; set; } = latitude;
     [Required]
     public double Longitude { get; set; } = longitude;
-    [Required]
     public BusRoute? Route { get; set; }
     public List<Entry> Entries { get; set; } = [];
 
-    public void SetRoute(BusRoute route)
+    public Stop SetRoute(BusRoute route)
     {
         Route = route;
+        return this;
     }
 
     public void AddEntry(Entry entry)
@@ -84,19 +84,21 @@ public class BusRoute(int id, int order) : IBusData(id)
 {
     [Required]
     public int Order { get; set; } = order;
-    [Required]
     public int StopId { get; set; }
     public Stop? Stop { get; set; }
     public Loop? Loop { get; set; }
 
-    public void SetLoop(Loop loop)
+    public BusRoute SetLoop(Loop loop)
     {
         Loop = loop;
+        return this;
     }
 
-    public void SetStop(Stop stop)
+    public BusRoute SetStop(Stop stop)
     {
         Stop = stop;
+        StopId = stop.Id;
+        return this;
     }
 
     public override void Update(IBusData data)
@@ -115,6 +117,11 @@ public class Loop(int id, string name) : IBusData(id)
     public List<BusRoute> Routes { get; set; } = [];
     public List<Entry> Entries { get; set; } = [];
 
+    public void AddRoute(BusRoute route)
+    {
+        Routes.Add(route);
+    }
+
     public void AddEntry(Entry entry)
     {
         Entries.Add(entry);
@@ -130,23 +137,17 @@ public class Loop(int id, string name) : IBusData(id)
 public class Entry(int id, int boarded, int leftBehind) : IBusData(id)
 {
     public DateTime Timestamp { get; set; } = DateTime.Now;
+    [Required]
     public int Boarded { get; set; } = boarded;
+    [Required]
     public int LeftBehind { get; set; } = leftBehind;
-    [Required]
     public Bus? Bus { get; set; }
-    [Required]
     public int? BusId { get; set; }
-    [Required]
     public Driver? Driver { get; set; }
-    [Required]
     public int? DriverId { get; set; }
-    [Required]
     public Loop? Loop { get; set; }
-    [Required]
     public int? LoopId { get; set; }
-    [Required]
     public Stop? Stop { get; set; }
-    [Required]
     public int? StopId { get; set; }
 
     public override void Update(IBusData data)
@@ -164,27 +165,31 @@ public class Entry(int id, int boarded, int leftBehind) : IBusData(id)
         StopId = updatedEntry.StopId;
     }
 
-    public void SetBus(Bus bus)
+    public Entry SetBus(Bus bus)
     {
         Bus = bus;
         BusId = bus.Id;
+        return this;
     }
 
-    public void SetDriver(Driver driver)
+    public Entry SetDriver(Driver driver)
     {
         Driver = driver;
         DriverId = driver.Id;
+        return this;
     }
 
-    public void SetLoop(Loop loop)
+    public Entry SetLoop(Loop loop)
     {
         Loop = loop;
         LoopId = loop.Id;
+        return this;
     }
 
-    public void SetStop(Stop stop)
+    public Entry SetStop(Stop stop)
     {
         Stop = stop;
         StopId = stop.Id;
+        return this;
     }
 }

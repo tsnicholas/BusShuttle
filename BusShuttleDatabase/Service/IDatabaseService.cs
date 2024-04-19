@@ -1,6 +1,5 @@
-using BusShuttleDatabase;
 using BusShuttleModel;
-namespace App.Service;
+namespace Database.Service;
 
 public interface IDatabaseService
 {

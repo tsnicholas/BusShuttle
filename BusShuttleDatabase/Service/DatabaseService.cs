@@ -1,20 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using BusShuttleDatabase;
 using BusShuttleModel;
-namespace App.Service;
+namespace Database.Service;
 
-public class DatabaseService : IDatabaseService
+public class DatabaseService() : IDatabaseService
 {
-    private readonly BusShuttleContext _context;
-
-    public DatabaseService(BusShuttleContext context)
-    {
-        _context = context;
-    }
+    private readonly BusShuttleContext _context = new();
 
     public List<T> GetAll<T>(params string[] childrenToInclude) where T : IBusData
     {

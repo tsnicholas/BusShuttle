@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using BusShuttleModel;
-namespace BusShuttleDatabase;
+namespace Database;
 
 public class BusShuttleContext : DbContext
 {

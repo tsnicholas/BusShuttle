@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace BusShuttleDatabase.Migrations
+namespace Database.Migrations
 {
     /// <inheritdoc />
     public partial class RefactorModel : Migration

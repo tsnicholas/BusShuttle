@@ -13,7 +13,7 @@ public class DatabaseService(BusShuttleContext context) : IDatabaseService
         {
             queryable = queryable.Include(child);
         }
-        return queryable.OrderBy(entity => entity.Id).ToList();
+        return [.. queryable.OrderBy(entity => entity.Id)];
     }
 
     public T GetById<T>(int id, params string[] childrenToInclude) where T : IBusData

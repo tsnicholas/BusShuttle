@@ -1,26 +1,16 @@
 using System.Diagnostics;
-using System.Web;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using App.Models;
-using App.Models.DriverModels;
-using BusShuttleModel;
 namespace App.Controllers;
 
 [Authorize]
-public class HomeController : Controller
+public class HomeController() : Controller
 {
-    private readonly ILogger<HomeController> _logger;
-    
-    public HomeController(ILogger<HomeController> logger)
-    {
-        _logger = logger;
-    }
-
     public IActionResult Index()
     {
-        if(User.IsInRole("Manager"))
+        var user = Thread.CurrentPrincipal ?? throw new InvalidDataException();
+        if(user.IsInRole("Manager"))
         {
             return RedirectToAction("Manager");
         }
@@ -31,23 +21,6 @@ public class HomeController : Controller
     public IActionResult Manager()
     {
         return View();
-    }
-
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    [Authorize("IsActivated")]
-    public async Task<IActionResult> Driver(DriverHomeModel model)
-    {
-        if(!ModelState.IsValid)
-        {
-            return RedirectToAction("Index", "BusManager");
-        }
-        var routeDictionary = new RouteValueDictionary();
-        await Task.Run(() => {
-            routeDictionary.Add("busId", model.BusId);
-            routeDictionary.Add("loopId", model.LoopId);
-        });
-        return RedirectToAction("Index", "BusManager");
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

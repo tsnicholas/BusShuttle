@@ -1,8 +1,3 @@
-using System;
-using System.Web;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 namespace App.Service;
@@ -56,8 +51,9 @@ public class AccountService : IAccountService
     }
 
     public async Task<string> GetCurrentEmail(ClaimsPrincipal securityInformation) {
-        var user = await _userManager.GetUserAsync(securityInformation);
-        return await _userManager.GetEmailAsync(user);
+        var user = await _userManager.GetUserAsync(securityInformation) 
+            ?? throw new Exception("Can't find User using Claims Principal.");
+        return await _userManager.GetEmailAsync(user) ?? throw new Exception("Can't find current user's email.");
     }
 
     private IUserEmailStore<IdentityUser> GetEmailStore()

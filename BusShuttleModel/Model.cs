@@ -136,6 +136,7 @@ public class Loop(int id, string name) : IBusData(id)
 
 public class Entry(int id, int boarded, int leftBehind) : IBusData(id)
 {
+    [Required]
     public DateTime Timestamp { get; set; } = DateTime.Now;
     [Required]
     public int Boarded { get; set; } = boarded;
@@ -153,6 +154,7 @@ public class Entry(int id, int boarded, int leftBehind) : IBusData(id)
     public override void Update(IBusData data)
     {
         Entry updatedEntry = data as Entry ?? throw new InvalidOperationException();
+        Timestamp = updatedEntry.Timestamp;
         Boarded = updatedEntry.Boarded;
         LeftBehind = updatedEntry.LeftBehind;
         Bus = updatedEntry.Bus;

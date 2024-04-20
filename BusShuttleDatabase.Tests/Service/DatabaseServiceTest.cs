@@ -63,4 +63,12 @@ public class DatabaseServiceTest : IClassFixture<DatabaseFixture>
         context.SaveChanges();
         Assert.Equal(testStops, service.GetAll<Stop>());
     }
+
+    [Fact]
+    public void Can_Get_All_Routes_Case()
+    {
+        context.Routes.AddRange(testRoutes);
+        context.SaveChanges();
+        Assert.Equal(testRoutes, service.GetAll<BusRoute>());
+    }
 }

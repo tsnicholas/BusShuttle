@@ -2,6 +2,7 @@ using Moq;
 using App.Service;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
+using System.Security.Principal;
 namespace App.Tests.Service;
 
 public class AccountServiceTests
@@ -56,10 +57,14 @@ public class AccountServiceTests
     [Fact]
     public async void AccountService_GetCurrentEmail_Successfully()
     {
+        const string mockEmail = "Your Email";
+        IIdentity fakeIdentity = new ClaimsIdentity();
+        IPrincipal fakePrinciple = new ClaimsPrincipal(fakeIdentity);
+        Thread.CurrentPrincipal = fakePrinciple;
         IdentityUser? user = Activator.CreateInstance<IdentityUser>();
-        ClaimsPrincipal securityInformation = new();
-        mockUserManager.Setup(x => x.GetUserAsync(securityInformation)).Returns(Task.FromResult(user));
-        mockUserManager.Setup(x => x.GetEmailAsync(user)).Returns(Task.FromResult("Your Email"));
-        await service.GetCurrentEmail(securityInformation);
+        mockUserManager.Setup(x => x.GetUserAsync(It.IsAny<ClaimsPrincipal>())).Returns(Task.FromResult(user));
+        mockUserManager.Setup(x => x.GetEmailAsync(user)).Returns(Task.FromResult(mockEmail));
+        string result = await service.GetCurrentEmail();
+        Assert.Equal(mockEmail, result);
     }
 }

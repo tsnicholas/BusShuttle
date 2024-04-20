@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using System.Web;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using App.Models;
@@ -7,21 +6,17 @@ using App.Models.DriverModels;
 using App.Service;
 using Database.Service;
 using BusShuttleModel;
+using System.Security.Claims;
+using System.Security.Principal;
 namespace App.Controllers;
 
 [Authorize("IsActivated")]
-public class DriverController : Controller
+public class DriverController(IAccountService accountService, IDatabaseService database) : Controller
 {
-    private readonly ILogger<DriverController> _logger;
-    private readonly IDatabaseService _database;
-    private readonly IAccountService _accountService;
-
-    public DriverController(ILogger<DriverController> logger, IAccountService accountService, IDatabaseService database)
-    {
-        _logger = logger;
-        _accountService = accountService;
-        _database = database;
-    }
+    private static readonly string BUS_ID_KEY = "busId";
+    private static readonly string LOOP_ID_KEY = "loopId";
+    private readonly IDatabaseService _database = database;
+    private readonly IAccountService _accountService = accountService;
 
     [HttpGet]
     public IActionResult Index()
@@ -39,10 +34,10 @@ public class DriverController : Controller
         {
             return View(model);
         }
-        var routeDictionary = new RouteValueDictionary();
+        RouteValueDictionary routeDictionary = [];
         await Task.Run(() => {
-            routeDictionary.Add("busId", model.BusId);
-            routeDictionary.Add("loopId", model.LoopId);
+            routeDictionary.Add(BUS_ID_KEY, model.BusId);
+            routeDictionary.Add(LOOP_ID_KEY, model.LoopId);
         });
         return RedirectToAction("EntryForm", routeDictionary);
     }
@@ -50,20 +45,25 @@ public class DriverController : Controller
     [HttpGet]
     public async Task<IActionResult> EntryForm([FromQuery] int busId, [FromQuery] int loopId)
     {
-        string email = await _accountService.GetCurrentEmail(HttpContext.User);
+        string email = await _accountService.GetCurrentEmail();
         Driver driver = _database.GetDriverByEmail(email);
         Bus bus = _database.GetById<Bus>(busId);
-        Loop loop = _database.GetLoopWithStopsById(loopId);
+        Loop loop = _database.GetById<Loop>(loopId, "BusRoute");
         List<Stop> stops = GenerateStopList(loop);
         return View(LoopEntryModel.CreateModel(driver, bus, loop, stops));
     }
 
     private List<Stop> GenerateStopList(Loop loop)
     {
-        List<Stop> output = new List<Stop>();
-        foreach(var route in loop.Routes)
+        List<Stop> output = [];
+        foreach(BusRoute route in loop.Routes)
         {
-            output.Add(route.Stop ?? throw new InvalidOperationException());
+            BusRoute routeWithStop = _database.GetById<BusRoute>(route.Id, "Stop");
+            if(routeWithStop.Stop == null)
+            {
+                continue;
+            }
+            output.Add(routeWithStop.Stop);
         }
         return output;
     }
@@ -71,24 +71,17 @@ public class DriverController : Controller
     [HttpPost]
     public async Task<IActionResult> EntryForm([Bind("DriverId,BusId,LoopId,StopId,Boarded,LeftBehind")]LoopEntryModel model)
     {
-        var routeParams = new RouteValueDictionary();
-        await Task.Run(() => {
-            routeParams.Add("busId", model.BusId);
-            routeParams.Add("loopId", model.LoopId);
-        });
-        if(!ModelState.IsValid)
+        if(ModelState.IsValid)
         {
-            return View(model);
+            await Task.Run(() => {
+                int nextId = _database.GetAll<Entry>().Count() + 1;
+                _database.CreateEntity(new Entry(nextId, model.Boarded, model.LeftBehind)
+                    .SetBus(_database.GetById<Bus>(model.BusId))
+                    .SetDriver(_database.GetById<Driver>(model.DriverId))
+                    .SetLoop(_database.GetById<Loop>(model.LoopId))
+                    .SetStop(_database.GetById<Stop>(model.StopId)));
+            });
         }
-        await Task.Run(() => {
-            int nextId = _database.GetAll<Entry>().Count() + 1;
-            Entry newEntry = new Entry(nextId, model.Boarded, model.LeftBehind);
-            newEntry.SetBus(_database.GetById<Bus>(model.BusId));
-            newEntry.SetDriver(_database.GetById<Driver>(model.DriverId));
-            newEntry.SetLoop(_database.GetById<Loop>(model.LoopId));
-            newEntry.SetStop(_database.GetById<Stop>(model.StopId));
-            _database.CreateEntity<Entry>(newEntry);
-        });
         return View(model);
     }
     

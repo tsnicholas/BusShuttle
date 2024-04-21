@@ -13,21 +13,23 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         // Add services to the container.
-        var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
+        var authConnectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
             ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-        builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite(connectionString));
+        builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite(authConnectionString));
+        var busDataConnectionString = builder.Configuration.GetConnectionString("BusDataConnection")
+            ?? throw new InvalidOperationException("Connection string 'BusDataConnection' not found.");
+        builder.Services.AddDbContext<BusShuttleContext>(options => options.UseSqlite(busDataConnectionString));
         builder.Services.AddDatabaseDeveloperPageExceptionFilter();
         builder.Services.AddDefaultIdentity<IdentityUser>()
             .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>();
-        builder.Services.AddAuthorization(options => options.AddPolicy("IsActivated", 
-            policyBuilder => policyBuilder.RequireClaim("activated", "True")));
+        builder.Services.AddAuthorizationBuilder()
+            .AddPolicy("IsActivated", policyBuilder => policyBuilder.RequireClaim("activated", "True"));
         builder.Services.Configure<IdentityOptions>(options => {
             options.User.RequireUniqueEmail = true;
         });
         builder.Services.AddControllersWithViews();
         builder.Services.AddScoped<UserManager<IdentityUser>>();
-        builder.Services.AddScoped<BusShuttleContext>();
         builder.Services.AddScoped<IDatabaseService, DatabaseService>();
         builder.Services.AddScoped<IAccountService, AccountService>();
         var app = builder.Build();

@@ -38,7 +38,18 @@ public class DatabaseService(BusShuttleContext context) : IDatabaseService
 
     private bool IsIdTaken<T>(int id) where T : IBusData
     {
-        return _context.Set<T>().Single(entity => entity.Id == id) != null;
+        try 
+        {
+            return _context.Set<T>().Single(entity => entity.Id == id) != null;
+        }
+        catch (InvalidOperationException exception)
+        {
+            if(exception.Message == "Sequence contains no elements")
+            {
+                return false;
+            }
+            throw exception ?? throw new InvalidOperationException();
+        }
     }
 
     public void CreateEntity<T>(T entity) where T : IBusData

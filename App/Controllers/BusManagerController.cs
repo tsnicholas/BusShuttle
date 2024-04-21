@@ -21,7 +21,7 @@ public class BusManagerController(IDatabaseService database) : Controller
     [HttpGet]
     public IActionResult CreateBus()
     {
-        return View(CreateBusModel.CreateBus(_database.GetAll<Bus>().Count + 1));
+        return View(CreateBusModel.CreateBus(_database.GenerateId<Bus>()));
     }
 
     [HttpPost]

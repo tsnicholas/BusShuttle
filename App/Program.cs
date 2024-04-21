@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using App.Data;
 using App.Service;
 using Database.Service;
+using Database;
 namespace App;
 
 public class Program
@@ -26,6 +27,7 @@ public class Program
         });
         builder.Services.AddControllersWithViews();
         builder.Services.AddScoped<UserManager<IdentityUser>>();
+        builder.Services.AddScoped<BusShuttleContext>();
         builder.Services.AddScoped<IDatabaseService, DatabaseService>();
         builder.Services.AddScoped<IAccountService, AccountService>();
         var app = builder.Build();

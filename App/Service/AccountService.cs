@@ -3,15 +3,11 @@ using System.Security.Claims;
 using System.Security.Principal;
 namespace App.Service;
 
-public class AccountService(
-    UserManager<IdentityUser> userManager,
-    IUserStore<IdentityUser> userStore,
-    IUserEmailStore<IdentityUser> emailStore
-    ) : IAccountService
+public class AccountService(UserManager<IdentityUser> userManager, IUserStore<IdentityUser> userStore) : IAccountService
 {
     private readonly UserManager<IdentityUser> _userManager = userManager;
     private readonly IUserStore<IdentityUser> _userStore = userStore;
-    private readonly IUserEmailStore<IdentityUser> _emailStore = emailStore;
+    private readonly IUserEmailStore<IdentityUser> _emailStore = (IUserEmailStore<IdentityUser>) userStore;
 
     public async Task<IdentityResult> CreateDriverAccount(string email, string password)
     {
@@ -48,18 +44,9 @@ public class AccountService(
         await _userManager.ReplaceClaimAsync(user, previousClaim, newClaim);
     }
 
-    public async Task<string> GetCurrentEmail() {
-        var securityInformation = GetSecurityInformation();
-        var user = await _userManager.GetUserAsync(securityInformation) 
+    public async Task<string> GetCurrentEmail(HttpContext context) {
+        var user = await _userManager.GetUserAsync(context.User) 
             ?? throw new Exception("Can't find User using Claims Principal.");
         return await _userManager.GetEmailAsync(user) ?? throw new Exception("Can't find current user's email.");
-    }
-
-    private static ClaimsPrincipal GetSecurityInformation()
-    {
-        Exception exception = new("Can't verify user's identity");
-        if(Thread.CurrentPrincipal == null) throw exception;
-        IIdentity identity = Thread.CurrentPrincipal.Identity ?? throw exception;
-        return new(identity);
     }
 }

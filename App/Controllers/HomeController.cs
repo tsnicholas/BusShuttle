@@ -9,8 +9,7 @@ public class HomeController() : Controller
 {
     public IActionResult Index()
     {
-        var user = Thread.CurrentPrincipal ?? throw new InvalidDataException();
-        if(user.IsInRole("Manager"))
+        if(User.IsInRole("Manager"))
         {
             return RedirectToAction("Manager");
         }

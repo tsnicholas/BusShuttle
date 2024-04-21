@@ -6,8 +6,6 @@ using App.Models.DriverModels;
 using App.Service;
 using Database.Service;
 using BusShuttleModel;
-using System.Security.Claims;
-using System.Security.Principal;
 namespace App.Controllers;
 
 [Authorize("IsActivated")]
@@ -45,7 +43,7 @@ public class DriverController(IAccountService accountService, IDatabaseService d
     [HttpGet]
     public async Task<IActionResult> EntryForm([FromQuery] int busId, [FromQuery] int loopId)
     {
-        string email = await _accountService.GetCurrentEmail();
+        string email = await _accountService.GetCurrentEmail(ControllerContext.HttpContext);
         Driver driver = _database.GetDriverByEmail(email);
         Bus bus = _database.GetById<Bus>(busId);
         Loop loop = _database.GetById<Loop>(loopId, "BusRoute");

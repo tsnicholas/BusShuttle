@@ -1,8 +1,10 @@
+using System.Security.Claims;
 using App.Controllers;
 using App.Models.DriverModels;
 using App.Service;
 using BusShuttleModel;
 using Database.Service;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Moq;
@@ -23,14 +25,19 @@ public class DriverControllerTests
     private static readonly BusRoute mockRoute = new BusRoute(1, 2).SetStop(mockStop);
     private static readonly LoopEntryModel mockEntryModel = LoopEntryModel.CreateModel(
         testDriver, testBuses[0], testLoops[0], [mockStop]);
-
     private static readonly Mock<IAccountService> accountService = new();
     private static readonly Mock<IDatabaseService> databaseService = new();
     private readonly DriverController controller;
 
     public DriverControllerTests()
     {
-        controller = new DriverController(accountService.Object, databaseService.Object);
+        Mock<HttpContext> mockContext = new();
+        ControllerContext context = new() {
+            HttpContext = mockContext.Object,
+        };
+        controller = new DriverController(accountService.Object, databaseService.Object) {
+            ControllerContext = context
+        };
     }
 
     [Fact]
@@ -67,7 +74,7 @@ public class DriverControllerTests
     public async void DriverController_EntryForm_ReturnsViewSuccessfully()
     {
         string mockEmail = testDriver.Email;
-        accountService.Setup(x => x.GetCurrentEmail()).Returns(Task.FromResult(mockEmail));
+        accountService.Setup(x => x.GetCurrentEmail(It.IsAny<HttpContext>())).Returns(Task.FromResult(mockEmail));
         databaseService.Setup(x => x.GetDriverByEmail(mockEmail)).Returns(testDriver);
         
         Bus mockBus = testBuses[0];

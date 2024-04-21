@@ -74,7 +74,7 @@ public class DriverController(IAccountService accountService, IDatabaseService d
         if(ModelState.IsValid)
         {
             await Task.Run(() => {
-                int nextId = _database.GetAll<Entry>().Count() + 1;
+                int nextId = _database.GetAll<Entry>().Count + 1;
                 _database.CreateEntity(new Entry(nextId, model.Boarded, model.LeftBehind)
                     .SetBus(_database.GetById<Bus>(model.BusId))
                     .SetDriver(_database.GetById<Driver>(model.DriverId))

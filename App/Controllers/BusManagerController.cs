@@ -8,16 +8,9 @@ using BusShuttleModel;
 namespace App.Controllers;
 
 [Authorize(Roles = "Manager")]
-public class BusManagerController : Controller 
+public class BusManagerController(IDatabaseService database) : Controller 
 {
-    private readonly ILogger<BusManagerController> _logger;
-    private readonly IDatabaseService _database;
-
-    public BusManagerController(ILogger<BusManagerController> logger, IDatabaseService database)
-    {
-        _logger = logger;
-        _database = database;
-    }
+    private readonly IDatabaseService _database = database;
 
     [HttpGet]
     public IActionResult Index()
@@ -28,7 +21,7 @@ public class BusManagerController : Controller
     [HttpGet]
     public IActionResult CreateBus()
     {
-        return View(CreateBusModel.CreateBus(_database.GetAll<Bus>().Count() + 1));
+        return View(CreateBusModel.CreateBus(_database.GetAll<Bus>().Count + 1));
     }
 
     [HttpPost]
@@ -36,7 +29,7 @@ public class BusManagerController : Controller
     public async Task<IActionResult> CreateBus([Bind("Id,BusNumber")] CreateBusModel viewModel)
     {
         if(!ModelState.IsValid) return View(viewModel);
-        await Task.Run(() => _database.CreateEntity<Bus>(new Bus(viewModel.Id, viewModel.BusNumber)));
+        await Task.Run(() => _database.CreateEntity(new Bus(viewModel.Id, viewModel.BusNumber)));
         return RedirectToAction("Index");
     }
 
@@ -53,8 +46,8 @@ public class BusManagerController : Controller
     {
         if(!ModelState.IsValid) return View(editBusModel);
         await Task.Run(() => {
-            Bus updatedBus = new Bus(editBusModel.Id, editBusModel.BusNumber);
-            _database.UpdateById<Bus>(editBusModel.Id, updatedBus);
+            Bus updatedBus = new(editBusModel.Id, editBusModel.BusNumber);
+            _database.UpdateById(editBusModel.Id, updatedBus);
         });
         return RedirectToAction("Index");
     }

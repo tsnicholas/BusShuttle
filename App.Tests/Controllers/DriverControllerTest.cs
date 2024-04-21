@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using App.Controllers;
 using App.Models.DriverModels;
 using App.Service;
@@ -22,6 +21,8 @@ public class DriverControllerTests
     private static readonly DriverHomeModel mockHomeModel = DriverHomeModel.CreateUsingLists(testLoops, testBuses);
     private static readonly Stop mockStop = new(1, "Bikini Bottom", 500, -1000);
     private static readonly BusRoute mockRoute = new BusRoute(1, 2).SetStop(mockStop);
+    private static readonly LoopEntryModel mockEntryModel = LoopEntryModel.CreateModel(
+        testDriver, testBuses[0], testLoops[0], [mockStop]);
 
     private static readonly Mock<IAccountService> accountService = new();
     private static readonly Mock<IDatabaseService> databaseService = new();
@@ -80,5 +81,29 @@ public class DriverControllerTests
         var result = (ViewResult) await controller.EntryForm(mockHomeModel.BusId, mockHomeModel.LoopId);
         Assert.Equivalent(LoopEntryModel.CreateModel(testDriver, mockBus, mockLoop, [mockStop]), result.Model);
     }
-}
 
+    [Fact]
+    public async void DriverController_EntryForm_ReturnsDuringModelStateError()
+    {
+        controller.ModelState.AddModelError("key", "Fix me :(");
+        var result = (ViewResult) await controller.EntryForm(mockEntryModel);
+        Assert.Equivalent(mockEntryModel, result.Model);
+    }
+
+    [Fact]
+    public async void DriverController_EntryForm_SubmitsDataNormally()
+    {
+        Bus mockBus = testBuses[0];
+        Loop mockLoop = testLoops[0];
+        databaseService.Setup(x => x.GetAll<Entry>()).Returns([]);
+        databaseService.Setup(x => x.GetById<Bus>(mockBus.Id)).Returns(mockBus);
+        databaseService.Setup(x => x.GetById<Driver>(testDriver.Id)).Returns(testDriver);
+        databaseService.Setup(x => x.GetById<Stop>(mockStop.Id)).Returns(mockStop);
+        databaseService.Setup(x => x.GetById<Loop>(mockLoop.Id)).Returns(mockLoop);
+        Entry createdEntry = new Entry(1, mockEntryModel.Boarded, mockEntryModel.LeftBehind)
+            .SetBus(mockBus).SetDriver(testDriver).SetStop(mockStop).SetLoop(mockLoop);
+        databaseService.Setup(x => x.CreateEntity(createdEntry));
+        var result = (ViewResult) await controller.EntryForm(mockEntryModel);
+        Assert.Equivalent(mockEntryModel, result.Model);
+    }
+}

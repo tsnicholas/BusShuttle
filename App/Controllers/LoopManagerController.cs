@@ -36,7 +36,8 @@ public class LoopManagerController(IDatabaseService database) : Controller
     [HttpGet]
     public IActionResult EditLoop([FromRoute] int id)
     {
-        Loop selectedLoop = _database.GetById<Loop>(id);
+        Loop? selectedLoop = _database.GetById<Loop>(id);
+        if(selectedLoop == null) return RedirectToAction("Index");
         return View(EditLoopModel.FromLoop(selectedLoop));
     }
 
@@ -55,7 +56,8 @@ public class LoopManagerController(IDatabaseService database) : Controller
     [HttpGet]
     public IActionResult EditRoutesInLoop([FromRoute] int id)
     {
-        Loop loop = _database.GetById<Loop>(id);
+        Loop? loop = _database.GetById<Loop>(id);
+        if(loop == null) return RedirectToAction("Index");
         return View(EditRoutesInLoopModel.FromLoop(id, loop.Routes));
     }
 
@@ -74,7 +76,7 @@ public class LoopManagerController(IDatabaseService database) : Controller
         BusRoute? route = _database.GetById<BusRoute>(model.RouteId);
         if(route == null) return View(model);
         await Task.Run(() => {
-            Loop loop = _database.GetById<Loop>(model.LoopId);
+            Loop? loop = _database.GetById<Loop>(model.LoopId) ?? throw new InvalidOperationException();
             route.SetLoop(loop);
             loop.AddRoute(route);
             _database.SaveChanges();

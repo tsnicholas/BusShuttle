@@ -54,7 +54,8 @@ public class DriverManagerController(IAccountService accountService, IDatabaseSe
     [HttpGet]
     public IActionResult EditDriver([FromRoute] int id)
     {
-        Driver selectedDriver = _database.GetById<Driver>(id);
+        Driver? selectedDriver = _database.GetById<Driver>(id);
+        if(selectedDriver == null) return RedirectToAction("Index");
         return View(EditDriverModel.FromDriver(selectedDriver));
     }
 

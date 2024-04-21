@@ -36,7 +36,8 @@ public class BusManagerController(IDatabaseService database) : Controller
     [HttpGet]
     public IActionResult EditBus([FromRoute] int id)
     {
-        Bus selectedBus = _database.GetById<Bus>(id);
+        Bus? selectedBus = _database.GetById<Bus>(id);
+        if(selectedBus == null) return RedirectToAction("Index");
         return View(EditBusModel.FromBus(selectedBus));
     }
 

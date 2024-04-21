@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using App.Controllers;
 using App.Models.DriverModels;
 using App.Service;
@@ -46,7 +45,6 @@ public class DriverControllerTests
     [Fact]
     public void DriverController_Index_ReturnsHomeScreen()
     {
-        
         ViewResult result = (ViewResult) controller.Index();
         Assert.Equivalent(mockHomeModel, result.Model);
     }
@@ -84,8 +82,8 @@ public class DriverControllerTests
 
         Loop mockLoop = testLoops[0];
         mockLoop.AddRoute(mockRoute);
-        databaseService.Setup(x => x.GetById<Loop>(mockHomeModel.LoopId, "BusRoute")).Returns(mockLoop);
-        databaseService.Setup(x => x.GetById<BusRoute>(mockRoute.Id, "Stop")).Returns(mockRoute);
+        databaseService.Setup(x => x.GetById<Loop>(mockHomeModel.LoopId)).Returns(mockLoop);
+        databaseService.Setup(x => x.GetById<BusRoute>(mockRoute.Id)).Returns(mockRoute);
         
         var result = (ViewResult) await controller.EntryForm(mockHomeModel.BusId, mockHomeModel.LoopId);
         Assert.Equivalent(LoopEntryModel.CreateModel(

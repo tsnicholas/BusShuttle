@@ -36,7 +36,8 @@ public class StopManagerController(IDatabaseService database) : Controller
     [HttpGet]
     public IActionResult EditStop([FromRoute] int id)
     {
-        Stop selectedStop = _database.GetById<Stop>(id);
+        Stop? selectedStop = _database.GetById<Stop>(id);
+        if(selectedStop == null) return RedirectToAction("Index");
         return View(EditStopModel.FromStop(selectedStop));
     }
 

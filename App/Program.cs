@@ -18,7 +18,8 @@ public class Program
         builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite(authConnectionString));
         var busDataConnectionString = builder.Configuration.GetConnectionString("BusDataConnection")
             ?? throw new InvalidOperationException("Connection string 'BusDataConnection' not found.");
-        builder.Services.AddDbContext<BusShuttleContext>(options => options.UseSqlite(busDataConnectionString));
+        builder.Services.AddDbContext<BusShuttleContext>(options => 
+            options.UseLazyLoadingProxies().UseSqlite(busDataConnectionString));
         builder.Services.AddDatabaseDeveloperPageExceptionFilter();
         builder.Services.AddDefaultIdentity<IdentityUser>()
             .AddRoles<IdentityRole>()

@@ -37,8 +37,12 @@ public class RouteManagerController(IDatabaseService database) : Controller
     public async Task<IActionResult> CreateRoute([Bind("Id,Order,StopId")] CreateRouteModel createdRoute)
     {
         if(!ModelState.IsValid) return View(createdRoute);
+        Stop? stop = _database.GetById<Stop>(createdRoute.StopId);
+        if(stop == null) {
+            ModelState.AddModelError(string.Empty, "Selected Stop doesn't exist.");
+            return View(createdRoute);
+        }
         await Task.Run(() => {
-            Stop stop = _database.GetById<Stop>(createdRoute.StopId);
             BusRoute newRoute = new(createdRoute.Id, createdRoute.Order);
             newRoute.SetStop(stop);
             stop.SetRoute(newRoute);
@@ -50,7 +54,8 @@ public class RouteManagerController(IDatabaseService database) : Controller
     [HttpGet]
     public IActionResult EditRoute([FromRoute] int id)
     {
-        BusRoute selectedRoute = _database.GetById<BusRoute>(id);
+        BusRoute? selectedRoute = _database.GetById<BusRoute>(id);
+        if(selectedRoute == null) return RedirectToAction("Index");
         return View(EditRouteModel.FromRoute(selectedRoute));
     }
 
@@ -60,8 +65,8 @@ public class RouteManagerController(IDatabaseService database) : Controller
     {
         if(!ModelState.IsValid) return View(editRouteModel);
         await Task.Run(() => {
-            BusRoute updatedRoute = new BusRoute(editRouteModel.Id, editRouteModel.Order);
-            _database.UpdateById<BusRoute>(editRouteModel.Id, updatedRoute);
+            BusRoute updatedRoute = new(editRouteModel.Id, editRouteModel.Order);
+            _database.UpdateById(editRouteModel.Id, updatedRoute);
         });
         return RedirectToAction("Index");
     }

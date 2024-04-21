@@ -46,23 +46,26 @@ public class DriverController(IAccountService accountService, IDatabaseService d
         string email = await _accountService.GetCurrentEmail(ControllerContext.HttpContext);
         int nextId = _database.GenerateId<Entry>();
         Driver driver = _database.GetDriverByEmail(email);
-        Bus bus = _database.GetById<Bus>(busId);
-        Loop loop = _database.GetById<Loop>(loopId, "BusRoute");
+        Bus? bus = _database.GetById<Bus>(busId);
+        Loop? loop = _database.GetLoopWithStopsById(loopId);
+        if(bus == null || loop == null)
+        {
+            return RedirectToAction("Index");
+        }
         List<Stop> stops = GenerateStopList(loop);
         return View(LoopEntryModel.CreateModel(nextId, driver, bus, loop, stops));
     }
 
-    private List<Stop> GenerateStopList(Loop loop)
+    private static List<Stop> GenerateStopList(Loop loop)
     {
         List<Stop> output = [];
-        foreach(BusRoute route in loop.Routes)
+        foreach(var route in loop.Routes)
         {
-            BusRoute routeWithStop = _database.GetById<BusRoute>(route.Id, "Stop");
-            if(routeWithStop.Stop == null)
+            if(route.Stop == null) 
             {
                 continue;
             }
-            output.Add(routeWithStop.Stop);
+            output.Add(route.Stop);
         }
         return output;
     }
@@ -74,13 +77,16 @@ public class DriverController(IAccountService accountService, IDatabaseService d
         {
             await Task.Run(() => {
                 _database.CreateEntity(new Entry(model.Id, model.Boarded, model.LeftBehind)
-                    .SetBus(_database.GetById<Bus>(model.BusId))
-                    .SetDriver(_database.GetById<Driver>(model.DriverId))
-                    .SetLoop(_database.GetById<Loop>(model.LoopId))
-                    .SetStop(_database.GetById<Stop>(model.StopId)));
+                    .SetBus(_database.GetById<Bus>(model.BusId) ?? throw new InvalidOperationException())
+                    .SetDriver(_database.GetById<Driver>(model.DriverId) ?? throw new InvalidOperationException())
+                    .SetLoop(_database.GetById<Loop>(model.LoopId) ?? throw new InvalidOperationException())
+                    .SetStop(_database.GetById<Stop>(model.StopId) ?? throw new InvalidOperationException()));
             });
         }
-        return View(model);
+        RouteValueDictionary routeDictionary = [];
+        routeDictionary.Add(BUS_ID_KEY, model.BusId);
+        routeDictionary.Add(LOOP_ID_KEY, model.LoopId);
+        return RedirectToAction("EntryForm", routeDictionary);
     }
     
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

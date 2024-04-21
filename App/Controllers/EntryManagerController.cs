@@ -32,10 +32,10 @@ public class EntryManagerController(IDatabaseService database) : Controller
         if(!ModelState.IsValid) return View(entry);
         await Task.Run(() => {
             Entry newEntry = new(entry.Id, entry.Boarded, entry.LeftBehind);
-            newEntry.SetBus(_database.GetById<Bus>(entry.BusId));
-            newEntry.SetDriver(_database.GetById<Driver>(entry.DriverId));
-            newEntry.SetLoop(_database.GetById<Loop>(entry.LoopId));
-            newEntry.SetStop(_database.GetById<Stop>(entry.StopId));
+            newEntry.SetBus(_database.GetById<Bus>(entry.BusId) ?? throw new InvalidOperationException());
+            newEntry.SetDriver(_database.GetById<Driver>(entry.DriverId) ?? throw new InvalidOperationException());
+            newEntry.SetLoop(_database.GetById<Loop>(entry.LoopId) ?? throw new InvalidOperationException());
+            newEntry.SetStop(_database.GetById<Stop>(entry.StopId) ?? throw new InvalidOperationException());
             _database.CreateEntity(newEntry);
         });
         return RedirectToAction("Index");
@@ -44,7 +44,8 @@ public class EntryManagerController(IDatabaseService database) : Controller
     [HttpGet]
     public IActionResult EditEntry([FromRoute] int id)
     {
-        Entry selectedEntry = _database.GetById<Entry>(id);
+        Entry? selectedEntry = _database.GetById<Entry>(id);
+        if(selectedEntry == null) return RedirectToAction("Index");
         return View(EditEntryModel.FromEntry(selectedEntry));
     }
 
@@ -55,10 +56,10 @@ public class EntryManagerController(IDatabaseService database) : Controller
         if(!ModelState.IsValid) return View(viewModel);
         await Task.Run(() => {
             Entry updatedEntry = new Entry(viewModel.Id, viewModel.Boarded, viewModel.LeftBehind)
-                .SetBus(_database.GetById<Bus>(viewModel.BusId))
-                .SetDriver(_database.GetById<Driver>(viewModel.DriverId))
-                .SetLoop(_database.GetById<Loop>(viewModel.LoopId))
-                .SetStop(_database.GetById<Stop>(viewModel.StopId));
+                .SetBus(_database.GetById<Bus>(viewModel.BusId) ?? throw new InvalidOperationException())
+                .SetDriver(_database.GetById<Driver>(viewModel.DriverId) ?? throw new InvalidOperationException())
+                .SetLoop(_database.GetById<Loop>(viewModel.LoopId) ?? throw new InvalidOperationException())
+                .SetStop(_database.GetById<Stop>(viewModel.StopId) ?? throw new InvalidOperationException());
             _database.UpdateById(viewModel.Id, updatedEntry);
         });
         return RedirectToAction("Index");

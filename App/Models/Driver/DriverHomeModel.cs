@@ -5,9 +5,9 @@ namespace App.Models.DriverModels;
 public class DriverHomeModel
 {
     [Required]
-    public List<Loop> Loops { get; set; } = new();
+    public List<Loop> Loops { get; set; } = [];
     [Required]
-    public List<Bus> Buses { get; set; } = new();
+    public List<Bus> Buses { get; set; } = [];
     [Required]
     [Range(1, int.MaxValue, ErrorMessage = "Please enter a valid Loop Id.")]
     public int LoopId { get; set; } = -1;

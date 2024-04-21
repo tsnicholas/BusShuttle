@@ -10,7 +10,7 @@ public class AddRouteToLoopModel
     [Range(1, int.MaxValue, ErrorMessage = "Please enter a valid Loop Id.")]
     public int LoopId { get; set; }
     [Required]
-    public List<BusRoute> Routes { get; set; } = new();
+    public List<BusRoute> Routes { get; set; } = [];
     [Required]
     [Range(1, int.MaxValue, ErrorMessage = "Please enter a valid Route Id.")]
     public int RouteId { get; set; } = 1;

@@ -6,11 +6,11 @@ namespace App.Test.Controllers;
 
 public class HomeControllerTest
 {
-    private readonly HomeController Controller;
+    private readonly HomeController controller;
 
     public HomeControllerTest()
     {
-        Controller = new HomeController();
+        controller = new HomeController();
         
     }
 
@@ -20,7 +20,7 @@ public class HomeControllerTest
         var fakePrinciple = new Mock<IPrincipal>();
         fakePrinciple.Setup(e => e.IsInRole("Manager")).Returns(true);
         Thread.CurrentPrincipal = fakePrinciple.Object;
-        var result = (RedirectToActionResult) Controller.Index();
+        var result = (RedirectToActionResult) controller.Index();
         Assert.Equal("Manager", result.ActionName);
     }
 
@@ -30,7 +30,7 @@ public class HomeControllerTest
         var fakePrinciple = new Mock<IPrincipal>();
         fakePrinciple.Setup(e => e.IsInRole("Manager")).Returns(false);
         Thread.CurrentPrincipal = fakePrinciple.Object;
-        var result = (RedirectToActionResult) Controller.Index();
+        var result = (RedirectToActionResult) controller.Index();
         Assert.Equal("Index", result.ActionName);
         Assert.Equal("Driver", result.ControllerName);
     }

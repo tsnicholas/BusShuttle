@@ -15,7 +15,7 @@ public class LoopEntryModel
     [Required(ErrorMessage = "Your Loop Id is missing")]
     [Range(1, int.MaxValue, ErrorMessage = "Loop Id is invalid.")]
     public int LoopId { get; set; } = 1;
-    public List<Stop> Stops { get; set; } = new();
+    public List<Stop> Stops { get; set; } = [];
     [Required]
     [Range(1, int.MaxValue, ErrorMessage = "Please enter a valid Stop Id.")]
     public int StopId { get; set; } = 1;

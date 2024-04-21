@@ -11,7 +11,7 @@ public class CreateRouteModel
     [Required]
     public int Order { get; set; }
     [Required]
-    public List<Stop> Stops { get; set; } = new();
+    public List<Stop> Stops { get; set; } = [];
     [Required]
     public int StopId { get; set; } = 1;
 

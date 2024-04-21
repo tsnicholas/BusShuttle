@@ -1,7 +1,6 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using App.Models;
 using App.Models.Manager;
 using App.Service;
@@ -10,22 +9,10 @@ using BusShuttleModel;
 namespace App.Controllers;
 
 [Authorize(Roles = "Manager")]
-public class DriverManagerController : Controller
+public class DriverManagerController(IAccountService accountService, IDatabaseService database) : Controller
 {
-    private readonly ILogger<DriverManagerController> _logger;
-    private readonly IAccountService _accountService;
-    private readonly IDatabaseService _database;
-
-    public DriverManagerController(
-        ILogger<DriverManagerController> logger,
-        IAccountService accountService,
-        IDatabaseService database
-    )
-    {
-        _logger = logger;
-        _accountService = accountService;
-        _database = database;
-    }
+    private readonly IAccountService _accountService = accountService;
+    private readonly IDatabaseService _database = database;
 
     [HttpGet]
     public IActionResult Index()
@@ -36,7 +23,7 @@ public class DriverManagerController : Controller
     [HttpGet]
     public IActionResult CreateDriver()
     {
-        return View(CreateDriverModel.CreateDriver(_database.GetAll<Driver>().Count() + 1));
+        return View(CreateDriverModel.CreateDriver(_database.GetAll<Driver>().Count + 1));
     }
 
     [HttpPost]
@@ -53,7 +40,7 @@ public class DriverManagerController : Controller
             }
             return View(driver);
         }
-        await Task.Run(() => _database.CreateEntity<Driver>(new Driver(driver.Id, driver.FirstName, driver.LastName, driver.Email)));
+        await Task.Run(() => _database.CreateEntity(new Driver(driver.Id, driver.FirstName, driver.LastName, driver.Email)));
         return RedirectToAction("Index");
     }
 
@@ -77,8 +64,9 @@ public class DriverManagerController : Controller
     {
         if(!ModelState.IsValid) return View(editDriverModel);
         await Task.Run(() => {
-            Driver updatedDriver = new Driver(editDriverModel.Id, editDriverModel.FirstName, editDriverModel.LastName, editDriverModel.Email);
-            _database.UpdateById<Driver>(editDriverModel.Id, updatedDriver);
+            Driver updatedDriver = new(editDriverModel.Id, editDriverModel.FirstName, 
+                editDriverModel.LastName, editDriverModel.Email);
+            _database.UpdateById(editDriverModel.Id, updatedDriver);
         });
         return RedirectToAction("Index");
     }

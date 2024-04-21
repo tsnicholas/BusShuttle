@@ -8,16 +8,9 @@ using BusShuttleModel;
 namespace App.Controllers;
 
 [Authorize(Roles = "Manager")]
-public class EntryManagerController : Controller
+public class EntryManagerController(IDatabaseService database) : Controller
 {
-    private readonly ILogger<EntryManagerController> _logger;
-    private readonly IDatabaseService _database;
-
-    public EntryManagerController(ILogger<EntryManagerController> logger, IDatabaseService database)
-    {
-        _logger = logger;
-        _database = database;
-    }
+    private readonly IDatabaseService _database = database;
 
     [HttpGet]
     public IActionResult Index()
@@ -38,12 +31,12 @@ public class EntryManagerController : Controller
     {
         if(!ModelState.IsValid) return View(entry);
         await Task.Run(() => {
-            Entry newEntry = new Entry(entry.Id, entry.Boarded, entry.LeftBehind);
+            Entry newEntry = new(entry.Id, entry.Boarded, entry.LeftBehind);
             newEntry.SetBus(_database.GetById<Bus>(entry.BusId));
             newEntry.SetDriver(_database.GetById<Driver>(entry.DriverId));
             newEntry.SetLoop(_database.GetById<Loop>(entry.LoopId));
             newEntry.SetStop(_database.GetById<Stop>(entry.StopId));
-            _database.CreateEntity<Entry>(newEntry);
+            _database.CreateEntity(newEntry);
         });
         return RedirectToAction("Index");
     }
@@ -61,12 +54,12 @@ public class EntryManagerController : Controller
     {
         if(!ModelState.IsValid) return View(viewModel);
         await Task.Run(() => {
-            Entry updatedEntry = new Entry(viewModel.Id, viewModel.Boarded, viewModel.LeftBehind);
-            updatedEntry.SetBus(_database.GetById<Bus>(viewModel.BusId));
-            updatedEntry.SetDriver(_database.GetById<Driver>(viewModel.DriverId));
-            updatedEntry.SetLoop(_database.GetById<Loop>(viewModel.LoopId));
-            updatedEntry.SetStop(_database.GetById<Stop>(viewModel.StopId));
-            _database.UpdateById<Entry>(viewModel.Id, updatedEntry);
+            Entry updatedEntry = new Entry(viewModel.Id, viewModel.Boarded, viewModel.LeftBehind)
+                .SetBus(_database.GetById<Bus>(viewModel.BusId))
+                .SetDriver(_database.GetById<Driver>(viewModel.DriverId))
+                .SetLoop(_database.GetById<Loop>(viewModel.LoopId))
+                .SetStop(_database.GetById<Stop>(viewModel.StopId));
+            _database.UpdateById(viewModel.Id, updatedEntry);
         });
         return RedirectToAction("Index");
     }

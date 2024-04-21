@@ -4,24 +4,30 @@
     ViewData["Title"] = "Driver Home";
 }
 
-<form asp-action="Index" method="POST">
-    <div class="form-group">
-        <select asp-for="LoopId" class="form-control">
-            @foreach(var loop in Model.Loops)
-            {
-                <option value="@loop.Id">@loop.Name</option>
-            }
-        </select>
-    </div>
-    <div class="form-group">
-        <select asp-for="BusId" class="form-control">
-            @foreach(var bus in Model.Buses)
-            {
-                <option value="@bus.Id">@bus.BusNumber</option>
-            }
-        </select>
-    </div>
-    <div class="form-group">
-        <input type="submit" value="Select" class="btn btn-primary" />
-    </div>
-</form>
+<div class="flex flex-col justify-content-center border border-secondary-subtle text-center p-5 m-5">
+    <form asp-action="Index" method="POST">
+        <div class="form-group py-3 my-3 gap-2">
+            <label asp-for="LoopId" class="form-label fs-3"></label>
+            <select asp-for="LoopId" class="form-select form-control">
+                <option selected></option>
+                @foreach(var loop in Model.Loops)
+                {
+                    <option value="@loop.Id">@loop.Name</option>
+                }
+            </select>
+        </div>
+        <div class="form-group py-3 my-3 gap-2">
+            <label asp-for="BusId" class="form-label fs-3"></label>
+            <select asp-for="BusId" class="form-select form-control ">
+                <option selected></option>
+                @foreach(var bus in Model.Buses)
+                {
+                    <option value="@bus.Id">@bus.BusNumber</option>
+                }
+            </select>
+        </div>
+        <div class="form-group py-3 my-3">
+            <input type="submit" value="Start" class="btn btn-primary btn-lg w-25" />
+        </div>
+    </form>
+</div>

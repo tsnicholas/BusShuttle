@@ -25,6 +25,7 @@ public class LoopEntryModel
     [Range(0, int.MaxValue, ErrorMessage = "Please enter a positive integer.")]
     public int Boarded {get; set; } = 0;
     [Required]
+    [Display(Name = "Left Behind")]
     [Range(0, int.MaxValue, ErrorMessage = "Please enter a positive integer.")]
     public int LeftBehind { get; set; } = 0;
     

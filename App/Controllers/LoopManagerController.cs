@@ -8,16 +8,9 @@ using BusShuttleModel;
 namespace App.Controllers;
 
 [Authorize(Roles = "Manager")]
-public class LoopManagerController : Controller
+public class LoopManagerController(IDatabaseService database) : Controller
 {
-    private readonly ILogger<LoopManagerController> _logger;
-    private readonly IDatabaseService _database;
-
-    public LoopManagerController(ILogger<LoopManagerController> logger, IDatabaseService database)
-    {
-        _logger = logger;
-        _database = database;
-    }
+    private readonly IDatabaseService _database = database;
 
     [HttpGet]
     public IActionResult Index()
@@ -28,7 +21,7 @@ public class LoopManagerController : Controller
     [HttpGet]
     public IActionResult CreateLoop()
     {
-        return View(CreateLoopModel.CreateLoop(_database.GetAll<Loop>().Count() + 1));
+        return View(CreateLoopModel.CreateLoop(_database.GetAll<Loop>().Count + 1));
     }
 
     [HttpPost]
@@ -36,7 +29,7 @@ public class LoopManagerController : Controller
     public async Task<IActionResult> CreateLoop([Bind("Id,Name")] CreateLoopModel loop)
     {
         if(!ModelState.IsValid) return View(loop);
-        await Task.Run(() => _database.CreateEntity<Loop>(new Loop(loop.Id, loop.Name)));
+        await Task.Run(() => _database.CreateEntity(new Loop(loop.Id, loop.Name)));
         return RedirectToAction("Index");
     }
 
@@ -53,8 +46,8 @@ public class LoopManagerController : Controller
     {
         if(!ModelState.IsValid) return View(editLoopModel);
         await Task.Run(() => {
-            Loop updatedLoop = new Loop(editLoopModel.Id, editLoopModel.Name);
-            _database.UpdateById<Loop>(editLoopModel.Id, updatedLoop);
+            Loop updatedLoop = new(editLoopModel.Id, editLoopModel.Name);
+            _database.UpdateById(editLoopModel.Id, updatedLoop);
         });
         return RedirectToAction("Index");
     }
@@ -69,7 +62,6 @@ public class LoopManagerController : Controller
     [HttpGet]
     public IActionResult AddRoute([FromRoute] int id)
     {
-        Loop loop = _database.GetById<Loop>(id);
         List<BusRoute> routes = _database.GetAll<BusRoute>();
         return View(AddRouteToLoopModel.FromId(id, routes));
     }
@@ -84,7 +76,8 @@ public class LoopManagerController : Controller
         await Task.Run(() => {
             Loop loop = _database.GetById<Loop>(model.LoopId);
             route.SetLoop(loop);
-            _database.AddRouteToLoop(loop, route);
+            loop.AddRoute(route);
+            _database.SaveChanges();
         });
         return RedirectToAction("Index");
     }

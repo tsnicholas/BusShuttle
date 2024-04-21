@@ -8,16 +8,9 @@ using BusShuttleModel;
 namespace App.Controllers;
 
 [Authorize(Roles = "Manager")]
-public class RouteManagerController : Controller
+public class RouteManagerController(IDatabaseService database) : Controller
 {
-    private readonly ILogger<RouteManagerController> _logger;
-    private readonly IDatabaseService _database;
-
-    public RouteManagerController(ILogger<RouteManagerController> logger, IDatabaseService database)
-    {
-        _logger = logger;
-        _database = database;
-    }
+    private readonly IDatabaseService _database = database;
 
     [HttpGet]
     public IActionResult Index()
@@ -29,14 +22,14 @@ public class RouteManagerController : Controller
     public IActionResult CreateRoute()
     {
         List<Stop> stops = _database.GetAll<Stop>();
-        foreach(var stop in stops)
+        foreach(Stop stop in stops.ToList())
         {
             if(stop.Route != null)
             {
                 stops.Remove(stop);
             }
         }
-        return View(CreateRouteModel.CreateRoute(_database.GetAll<BusRoute>().Count() + 1, stops));
+        return View(CreateRouteModel.CreateRoute(_database.GetAll<BusRoute>().Count + 1, stops));
     }
 
     [HttpPost]
@@ -46,10 +39,10 @@ public class RouteManagerController : Controller
         if(!ModelState.IsValid) return View(createdRoute);
         await Task.Run(() => {
             Stop stop = _database.GetById<Stop>(createdRoute.StopId);
-            BusRoute newRoute = new BusRoute(createdRoute.Id, createdRoute.Order);
+            BusRoute newRoute = new(createdRoute.Id, createdRoute.Order);
             newRoute.SetStop(stop);
             stop.SetRoute(newRoute);
-            _database.CreateEntity<BusRoute>(newRoute);
+            _database.CreateEntity(newRoute);
         });
         return RedirectToAction("Index");
     }

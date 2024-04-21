@@ -8,16 +8,9 @@ using BusShuttleModel;
 namespace App.Controllers;
 
 [Authorize(Roles = "Manager")]
-public class StopManagerController : Controller
+public class StopManagerController(IDatabaseService database) : Controller
 {
-    private readonly ILogger<StopManagerController> _logger;
-    private readonly IDatabaseService _database;
-
-    public StopManagerController(ILogger<StopManagerController> logger, IDatabaseService database)
-    {
-        _logger = logger;
-        _database = database;
-    }
+    private readonly IDatabaseService _database = database;
 
     [HttpGet]
     public IActionResult Index()
@@ -28,7 +21,7 @@ public class StopManagerController : Controller
     [HttpGet]
     public IActionResult CreateStop()
     {
-        return View(CreateStopModel.CreateStop(_database.GetAll<Stop>().Count() + 1));
+        return View(CreateStopModel.CreateStop(_database.GetAll<Stop>().Count + 1));
     }
 
     [HttpPost]
@@ -36,7 +29,7 @@ public class StopManagerController : Controller
     public async Task<IActionResult> CreateStop([Bind("Id,Name,Latitude,Longitude")] CreateStopModel stop)
     {
         if(!ModelState.IsValid) return View(stop);
-        await Task.Run(() => _database.CreateEntity<Stop>(new Stop(stop.Id, stop.Name, stop.Latitude, stop.Longitude)));
+        await Task.Run(() => _database.CreateEntity(new Stop(stop.Id, stop.Name, stop.Latitude, stop.Longitude)));
         return RedirectToAction("Index");
     }
 
@@ -53,8 +46,8 @@ public class StopManagerController : Controller
     {
         if(!ModelState.IsValid) return View(editStopModel);
         await Task.Run(() => {
-            Stop updatedStop = new Stop(editStopModel.Id, editStopModel.Name, editStopModel.Longitude, editStopModel.Latitude);
-            _database.UpdateById<Stop>(editStopModel.Id, updatedStop);
+            Stop updatedStop = new(editStopModel.Id, editStopModel.Name, editStopModel.Longitude, editStopModel.Latitude);
+            _database.UpdateById(editStopModel.Id, updatedStop);
         });
         return RedirectToAction("Index");
     }

@@ -8,8 +8,7 @@ public interface IDatabaseService
     void CreateEntity<T>(T entity) where T : IBusData;
     void UpdateById<T>(int id, T entity) where T : IBusData;
     void DeleteById<T>(int id) where T : IBusData;
-    
-    void AddRouteToLoop(Loop loop, BusRoute route);
     Loop GetLoopWithStopsById(int id);
     Driver GetDriverByEmail(string email);
+    void SaveChanges();
 }

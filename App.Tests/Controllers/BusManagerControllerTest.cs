@@ -8,7 +8,7 @@ namespace App.Tests.Controllers;
 
 public class BusManagerControllerTests
 {
-    private static readonly string RedirectedAction = "Index";
+    private static readonly string HomeAction = "Index";
     private static readonly List<Bus> testBuses = [ new(1, 69), new(2, 42) ];
     private static readonly Mock<IDatabaseService> mockService = new();
     private readonly BusManagerController controller;
@@ -47,7 +47,7 @@ public class BusManagerControllerTests
         };
         mockService.Setup(x => x.CreateEntity(newBus));
         var result = (RedirectToActionResult) await controller.CreateBus(creationModel);
-        Assert.Equal(RedirectedAction, result.ActionName);
+        Assert.Equal(HomeAction, result.ActionName);
     }
 
     [Fact]
@@ -68,7 +68,7 @@ public class BusManagerControllerTests
         editModel.BusNumber = updatedBusNumber;
         mockService.Setup(x => x.UpdateById(editModel.Id, new Bus(editModel.Id, updatedBusNumber)));
         var result = (RedirectToActionResult) await controller.EditBus(editModel);
-        Assert.Equal(RedirectedAction, result.ActionName);
+        Assert.Equal(HomeAction, result.ActionName);
     }
 
     [Fact]
@@ -90,6 +90,6 @@ public class BusManagerControllerTests
         };
         mockService.Setup(x => x.DeleteById<Bus>(deleteModel.Id));
         var result = (RedirectToActionResult) await controller.DeleteBus(deleteModel);
-        Assert.Equal(RedirectedAction, result.ActionName);
+        Assert.Equal(HomeAction, result.ActionName);
     }
 }

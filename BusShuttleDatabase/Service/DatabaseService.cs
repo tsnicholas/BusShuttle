@@ -58,20 +58,13 @@ public class DatabaseService(BusShuttleContext context) : IDatabaseService
             .ThenInclude(route => route.Stop).Single(loop => loop.Id == id);
     }
 
-    public void AddRouteToLoop(Loop loop, BusRoute route)
-    {
-        loop.Routes.Add(route);
-        _context.SaveChanges();
-    }
-
-    public void RemoveRouteFromLoop(Loop loop, BusRoute route)
-    {
-        loop.Routes.Remove(route);
-        _context.SaveChanges();
-    }
-
     public Driver GetDriverByEmail(string email)
     {
         return _context.Drivers.Single(driver => driver.Email == email);
+    }
+
+    public void SaveChanges()
+    {
+        _context.SaveChanges();
     }
 }

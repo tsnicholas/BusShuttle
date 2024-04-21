@@ -10,7 +10,7 @@ namespace App.Tests.Controllers;
 
 public class DriverManagerControllerTest
 {
-    private static readonly string RedirectedAction = "Index";
+    private static readonly string HomeAction = "Index";
     private static readonly List<Driver> testDrivers = [
         new(1, "Tim", "Nicholas", "tsnicholas@bsu.edu"),
         new(2, "Morgan", "Freeman", "MFreeman564@Gmail.com")
@@ -86,7 +86,7 @@ public class DriverManagerControllerTest
         Driver expectedDriver = new(creationModel.Id, creationModel.FirstName, creationModel.LastName, creationModel.Email);
         mockDatabaseService.Setup(x => x.CreateEntity(expectedDriver));
         var result = (RedirectToActionResult) await  controller.CreateDriver(creationModel);
-        Assert.Equal(RedirectedAction, result.ActionName);
+        Assert.Equal(HomeAction, result.ActionName);
     }
 
     [Fact]
@@ -113,7 +113,7 @@ public class DriverManagerControllerTest
         Driver expectedDriver = new(editModel.Id, editModel.FirstName, editModel.LastName, editModel.Email);
         mockDatabaseService.Setup(x => x.UpdateById(expectedDriver.Id, expectedDriver));
         var result = (RedirectToActionResult) await controller.EditDriver(editModel);
-        Assert.Equal(RedirectedAction, result.ActionName);
+        Assert.Equal(HomeAction, result.ActionName);
     }
 
     [Fact]
@@ -136,6 +136,6 @@ public class DriverManagerControllerTest
     {
         mockDatabaseService.Setup(x => x.DeleteById<Driver>(deletionModel.Id));
         var result = (RedirectToActionResult) await controller.DeleteDriver(deletionModel);
-        Assert.Equal(RedirectedAction, result.ActionName);
+        Assert.Equal(HomeAction, result.ActionName);
     }
 }

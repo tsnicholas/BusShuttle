@@ -21,7 +21,7 @@ public class LoopManagerController(IDatabaseService database) : Controller
     [HttpGet]
     public IActionResult CreateLoop()
     {
-        return View(CreateLoopModel.CreateLoop(_database.GetAll<Loop>().Count + 1));
+        return View(CreateLoopModel.CreateLoop(_database.GenerateId<Loop>()));
     }
 
     [HttpPost]

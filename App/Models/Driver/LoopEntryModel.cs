@@ -6,6 +6,8 @@ namespace App.Models.DriverModels;
 
 public class LoopEntryModel
 {
+    [Required]
+    public int Id { get; set; }
     [Required(ErrorMessage = "Your Driver Id is missing.")]
     [Range(1, int.MaxValue, ErrorMessage = "Driver Id is invalid.")]
     public int DriverId { get; set; } = 1;
@@ -26,10 +28,11 @@ public class LoopEntryModel
     [Range(0, int.MaxValue, ErrorMessage = "Please enter a positive integer.")]
     public int LeftBehind { get; set; } = 0;
     
-    public static LoopEntryModel CreateModel(Driver driver, Bus bus, Loop loop, List<Stop> stops)
+    public static LoopEntryModel CreateModel(int id, Driver driver, Bus bus, Loop loop, List<Stop> stops)
     {
         return new LoopEntryModel
         {
+            Id = id,
             DriverId = driver.Id,
             BusId = bus.Id,
             LoopId = loop.Id,

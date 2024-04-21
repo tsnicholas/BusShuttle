@@ -1,14 +1,13 @@
 using Moq;
 using App.Controllers;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Principal;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 namespace App.Test.Controllers;
 
 public class HomeControllerTest
 {
-    private static Mock<ClaimsPrincipal> mockPrincipal = new();
+    private static readonly Mock<ClaimsPrincipal> mockPrincipal = new();
     private readonly HomeController controller;
 
     public HomeControllerTest()

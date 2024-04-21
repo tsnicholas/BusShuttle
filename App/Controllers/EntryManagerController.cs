@@ -21,7 +21,7 @@ public class EntryManagerController(IDatabaseService database) : Controller
     [HttpGet]
     public IActionResult CreateEntry()
     {
-        return View(CreateEntryModel.CreateEntry(_database.GetAll<Entry>().Count() + 1));
+        return View(CreateEntryModel.CreateEntry(_database.GenerateId<Entry>()));
     }
 
     [HttpPost]

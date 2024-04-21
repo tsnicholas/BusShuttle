@@ -17,6 +17,7 @@ public class BusManagerControllerTests
     {
         controller = new BusManagerController(mockService.Object);
         mockService.Setup(x => x.GetAll<Bus>()).Returns(testBuses);
+        mockService.Setup(x => x.GenerateId<Bus>()).Returns(testBuses.Count + 1);
     }
 
     [Fact]

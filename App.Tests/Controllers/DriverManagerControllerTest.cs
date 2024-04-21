@@ -11,6 +11,7 @@ namespace App.Tests.Controllers;
 public class DriverManagerControllerTest
 {
     private static readonly string HomeAction = "Index";
+    private static readonly int mockRandomResult = 999;
     private static readonly List<Driver> testDrivers = [
         new(1, "Tim", "Nicholas", "tsnicholas@bsu.edu"),
         new(2, "Morgan", "Freeman", "MFreeman564@Gmail.com")
@@ -36,6 +37,7 @@ public class DriverManagerControllerTest
     {
         controller = new(mockAccountService.Object, mockDatabaseService.Object);
         mockDatabaseService.Setup(x => x.GetAll<Driver>()).Returns(testDrivers);
+        mockDatabaseService.Setup(x => x.GenerateId<Driver>()).Returns(mockRandomResult);
     }
 
     [Fact]
@@ -52,7 +54,7 @@ public class DriverManagerControllerTest
     [Fact]
     public void DriverManagerController_CreateDriver_ReturnPageSuccessfully()
     {
-        CreateDriverModel creationModel = CreateDriverModel.CreateDriver(testDrivers.Count + 1);
+        CreateDriverModel creationModel = CreateDriverModel.CreateDriver(mockRandomResult);
         var result = (ViewResult) controller.CreateDriver();
         Assert.Equivalent(creationModel, result.Model);
     }

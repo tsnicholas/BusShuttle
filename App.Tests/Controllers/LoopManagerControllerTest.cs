@@ -13,13 +13,14 @@ public class LoopManagerControllerTests
         new Loop(1, "Green Hill Zone"),
         new Loop(2, "Casino Night Zone")
     ];
+    private static readonly int mockRandomResult = 999;
     private static readonly List<BusRoute> testRoutes = [
         new BusRoute(1, 1).SetStop(new Stop(1, "Bikini Bottom", 500, -400)), 
         new BusRoute(2, 10).SetStop(new Stop(2, "South Park", 100, 30))
     ];
     private static readonly CreateLoopModel creationModel = new()
     {
-        Id = testLoops.Count + 1, Name = "Emerald Hill Zone"
+        Id = mockRandomResult, Name = "Emerald Hill Zone"
     };
     private static readonly EditLoopModel editModel = EditLoopModel.FromLoop(testLoops[0]);
     private static readonly AddRouteToLoopModel routeAdditionModel = AddRouteToLoopModel.FromId(testLoops[1].Id, testRoutes);
@@ -34,6 +35,7 @@ public class LoopManagerControllerTests
         mockService.Setup(x => x.GetAll<Loop>()).Returns(testLoops);
         mockService.Setup(x => x.GetById<Loop>(testLoops[0].Id)).Returns(testLoops[0]);
         mockService.Setup(x => x.GetById<Loop>(testLoops[1].Id)).Returns(testLoops[1]);
+        mockService.Setup(x => x.GenerateId<Loop>()).Returns(mockRandomResult);
     }
 
     [Fact]
@@ -50,7 +52,7 @@ public class LoopManagerControllerTests
     [Fact]
     public void LoopManagerController_CreateLoop_ReturnPageSuccessfully()
     {
-        CreateLoopModel initialModel = CreateLoopModel.CreateLoop(testLoops.Count + 1);
+        CreateLoopModel initialModel = CreateLoopModel.CreateLoop(mockRandomResult);
         var result = (ViewResult) controller.CreateLoop();
         Assert.Equivalent(initialModel, result.Model);
     }

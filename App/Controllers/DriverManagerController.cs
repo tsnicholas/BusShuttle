@@ -23,7 +23,7 @@ public class DriverManagerController(IAccountService accountService, IDatabaseSe
     [HttpGet]
     public IActionResult CreateDriver()
     {
-        return View(CreateDriverModel.CreateDriver(_database.GetAll<Driver>().Count + 1));
+        return View(CreateDriverModel.CreateDriver(_database.GenerateId<Driver>()));
     }
 
     [HttpPost]

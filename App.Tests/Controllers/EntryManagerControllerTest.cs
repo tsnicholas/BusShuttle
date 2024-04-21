@@ -70,6 +70,7 @@ public class EntryManagerControllerTest
         {
             mockDatabase.Setup(x => x.GetById<Entry>(entry.Id)).Returns(entry);
         }
+        mockDatabase.Setup(x => x.GenerateId<Entry>()).Returns(testBuses.Count + 1);
     }
 
     [Fact]

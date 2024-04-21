@@ -44,11 +44,12 @@ public class DriverController(IAccountService accountService, IDatabaseService d
     public async Task<IActionResult> EntryForm([FromQuery] int busId, [FromQuery] int loopId)
     {
         string email = await _accountService.GetCurrentEmail(ControllerContext.HttpContext);
+        int nextId = _database.GenerateId<Entry>();
         Driver driver = _database.GetDriverByEmail(email);
         Bus bus = _database.GetById<Bus>(busId);
         Loop loop = _database.GetById<Loop>(loopId, "BusRoute");
         List<Stop> stops = GenerateStopList(loop);
-        return View(LoopEntryModel.CreateModel(driver, bus, loop, stops));
+        return View(LoopEntryModel.CreateModel(nextId, driver, bus, loop, stops));
     }
 
     private List<Stop> GenerateStopList(Loop loop)
@@ -72,8 +73,7 @@ public class DriverController(IAccountService accountService, IDatabaseService d
         if(ModelState.IsValid)
         {
             await Task.Run(() => {
-                int nextId = _database.GetAll<Entry>().Count + 1;
-                _database.CreateEntity(new Entry(nextId, model.Boarded, model.LeftBehind)
+                _database.CreateEntity(new Entry(model.Id, model.Boarded, model.LeftBehind)
                     .SetBus(_database.GetById<Bus>(model.BusId))
                     .SetDriver(_database.GetById<Driver>(model.DriverId))
                     .SetLoop(_database.GetById<Loop>(model.LoopId))

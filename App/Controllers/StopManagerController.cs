@@ -21,7 +21,7 @@ public class StopManagerController(IDatabaseService database) : Controller
     [HttpGet]
     public IActionResult CreateStop()
     {
-        return View(CreateStopModel.CreateStop(_database.GetAll<Stop>().Count + 1));
+        return View(CreateStopModel.CreateStop(_database.GenerateId<Stop>()));
     }
 
     [HttpPost]

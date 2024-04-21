@@ -29,7 +29,7 @@ public class RouteManagerController(IDatabaseService database) : Controller
                 stops.Remove(stop);
             }
         }
-        return View(CreateRouteModel.CreateRoute(_database.GetAll<BusRoute>().Count + 1, stops));
+        return View(CreateRouteModel.CreateRoute(_database.GenerateId<BusRoute>(), stops));
     }
 
     [HttpPost]

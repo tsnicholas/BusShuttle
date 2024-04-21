@@ -26,6 +26,21 @@ public class DatabaseService(BusShuttleContext context) : IDatabaseService
         return queryable.Single(entity => entity.Id == id);
     }
 
+    public int GenerateId<T>() where T : IBusData
+    {
+        Random randomNumber = new(Guid.NewGuid().GetHashCode());
+        int nextId;
+        do {
+            nextId = randomNumber.Next(1, 1000000);
+        } while(IsIdTaken<T>(nextId));
+        return nextId;
+    }
+
+    private bool IsIdTaken<T>(int id) where T : IBusData
+    {
+        return _context.Set<T>().Single(entity => entity.Id == id) != null;
+    }
+
     public void CreateEntity<T>(T entity) where T : IBusData
     {
         _context.Set<T>().Add(entity);

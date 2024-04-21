@@ -42,6 +42,8 @@ public class RouteManagerControllerTest
         {
             mockDatabase.Setup(x => x.GetById<BusRoute>(route.Id)).Returns(route);
         }
+        mockDatabase.Setup(x => x.GenerateId<Stop>()).Returns(testStops.Count + 1);
+        mockDatabase.Setup(x => x.GenerateId<BusRoute>()).Returns(testRoutes.Count + 1);
     }
 
     [Fact]

@@ -29,6 +29,7 @@ public class StopManagerControllerTest
         mockDatabase.Setup(x => x.GetAll<Stop>()).Returns(testStops);
         mockDatabase.Setup(x => x.GetById<Stop>(testStops[0].Id)).Returns(testStops[0]);
         mockDatabase.Setup(x => x.GetById<Stop>(testStops[1].Id)).Returns(testStops[1]);
+        mockDatabase.Setup(x => x.GenerateId<Stop>()).Returns(testStops.Count + 1);
     }
 
     [Fact]

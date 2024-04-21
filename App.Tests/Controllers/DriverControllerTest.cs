@@ -24,7 +24,7 @@ public class DriverControllerTests
     private static readonly Stop mockStop = new(1, "Bikini Bottom", 500, -1000);
     private static readonly BusRoute mockRoute = new BusRoute(1, 2).SetStop(mockStop);
     private static readonly LoopEntryModel mockEntryModel = LoopEntryModel.CreateModel(
-        testDriver, testBuses[0], testLoops[0], [mockStop]);
+        testBuses.Count + 1, testDriver, testBuses[0], testLoops[0], [mockStop]);
     private static readonly Mock<IAccountService> accountService = new();
     private static readonly Mock<IDatabaseService> databaseService = new();
     private readonly DriverController controller;
@@ -38,13 +38,15 @@ public class DriverControllerTests
         controller = new DriverController(accountService.Object, databaseService.Object) {
             ControllerContext = context
         };
+        databaseService.Setup(x => x.GetAll<Loop>()).Returns(testLoops);
+        databaseService.Setup(x => x.GetAll<Bus>()).Returns(testBuses);
+        databaseService.Setup(x => x.GenerateId<Entry>()).Returns(testBuses.Count + 1);
     }
 
     [Fact]
     public void DriverController_Index_ReturnsHomeScreen()
     {
-        databaseService.Setup(x => x.GetAll<Loop>()).Returns(testLoops);
-        databaseService.Setup(x => x.GetAll<Bus>()).Returns(testBuses);
+        
         ViewResult result = (ViewResult) controller.Index();
         Assert.Equivalent(mockHomeModel, result.Model);
     }
@@ -86,7 +88,8 @@ public class DriverControllerTests
         databaseService.Setup(x => x.GetById<BusRoute>(mockRoute.Id, "Stop")).Returns(mockRoute);
         
         var result = (ViewResult) await controller.EntryForm(mockHomeModel.BusId, mockHomeModel.LoopId);
-        Assert.Equivalent(LoopEntryModel.CreateModel(testDriver, mockBus, mockLoop, [mockStop]), result.Model);
+        Assert.Equivalent(LoopEntryModel.CreateModel(
+            testBuses.Count + 1, testDriver, mockBus, mockLoop, [mockStop]), result.Model);
     }
 
     [Fact]

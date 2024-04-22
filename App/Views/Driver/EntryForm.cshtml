@@ -11,23 +11,23 @@
         <div asp-validation-summary="ModelOnly" class="text-danger form-text"></div>
         <div class="form-group py-2 my-2">
             <label asp-for="StopId" class="control-label fs-3 text-light"></label>
-            <select asp-for="StopId" class="form-select form-control">
+            <select asp-for="StopId" class="form-select form-control bg-dark text-light">
                 <option selected></option>
                 @foreach(var stop in Model.Stops)
                 {
-                    <option value="@stop.Id" class="text-light">@stop.Name</option>
+                    <option value="@stop.Id" class="text-light bg-dark">@stop.Name</option>
                 }
             </select>
             <span asp-validation-for="StopId" class="text-danger form-text"></span>
         </div>
         <div class="form-group py-2 my-2">
             <label asp-for="Boarded" class="control-label fs-3 text-light"></label>
-            <input asp-for="Boarded" class="form-control text-light" />
+            <input asp-for="Boarded" class="form-control text-light bg-dark" />
             <span asp-validation-for="Boarded" class="text-danger form-text"></span>
         </div>
         <div class="form-group py-2 my-2">
             <label asp-for="LeftBehind" class="control-label fs-3 text-light"></label>
-            <input asp-for="LeftBehind" class="form-control text-light" />
+            <input asp-for="LeftBehind" class="form-control text-light bg-dark" />
             <span asp-validation-for="LeftBehind" class="text-danger form-text"></span>
         </div>
         <div class="form-group py-2 my-2">

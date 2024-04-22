@@ -10,10 +10,10 @@
         <input type="hidden" asp-for="LoopId" />
         <input type="hidden" asp-for="Routes" />
         <div class="form-group py-2 my-2">
-            <select asp-for="RouteId" class="form-control">
+            <select asp-for="RouteId" class="form-control bg-dark text-light">
                 @foreach(var route in Model.Routes)
                 {
-                    <option value="@route.Id" class="text-light">@route.Id</option>
+                    <option value="@route.Id" class="text-light bg-dark">@route.Id</option>
                 }
             </select>
         </div>

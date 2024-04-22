@@ -9,14 +9,14 @@
         <input type="hidden" asp-for="Id" />
         <div class="form-group py-2 my-2">
             <label asp-for="Order" class="control-label fs-3 text-light"></label>
-            <input asp-for="Order" class="form-control text-light"/>
+            <input asp-for="Order" class="form-control text-light bg-dark"/>
             <span asp-validation-for="Order" class="text-danger form-text"></span>
         </div>
         <div>
-            <select asp-for="StopId" class="form-control">
+            <select asp-for="StopId" class="form-control bg-dark text-light">
                 @foreach(var stop in Model.Stops)
                 {
-                    <option value="@stop.Id" class="text-light">@stop.Name</option>
+                    <option value="@stop.Id" class="text-light bg-dark">@stop.Name</option>
                 }
             </select>
         </div>

@@ -2,31 +2,26 @@
 @{
     ViewData["Title"] = "Create Route";
 }
-
-<h2>Route Creator</h2>
 <a asp-action="Index">Back to Table</a>
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="CreateRoute" method="POST">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <input type="hidden" asp-for="Stops" />
-            <div class="form-group">
-                <label asp-for="Order" class="control-label"></label>
-                <input asp-for="Order" class="form-control" />
-                <span asp-validation-for="Order" class="text-danger"></span>
-            </div>
-            <div>
-                <select asp-for="StopId" class="form-control">
-                    @foreach(var stop in Model.Stops)
-                    {
-                        <option value="@stop.Id">@stop.Name</option>
-                    }
-                </select>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
+<div class="flex flex-col justify-content-center border border-secondary p-5 m-5 text-center">
+    <form asp-action="CreateRoute" method="POST">
+        <div asp-validation-summary="ModelOnly" class="text-danger form-text"></div>
+        <input type="hidden" asp-for="Id" />
+        <div class="form-group py-2 my-2">
+            <label asp-for="Order" class="control-label fs-3 text-light"></label>
+            <input asp-for="Order" class="form-control text-light"/>
+            <span asp-validation-for="Order" class="text-danger form-text"></span>
+        </div>
+        <div>
+            <select asp-for="StopId" class="form-control">
+                @foreach(var stop in Model.Stops)
+                {
+                    <option value="@stop.Id" class="text-light">@stop.Name</option>
+                }
+            </select>
+        </div>
+        <div class="form-group py-2 my-2">
+            <input type="submit" value="Save" class="btn btn-primary btn-lg w-25 text-light" />
+        </div>
+    </form>
 </div>

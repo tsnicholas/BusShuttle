@@ -13,6 +13,10 @@ public class EditEntryModel
     public int DriverId { get; set; }
     public int LoopId { get; set; }
     public int StopId { get; set; }
+    public List<Bus> Buses { get; set; }
+    public List<Driver> Drivers { get; set; }
+    public List<Loop> Loops { get; set; }
+    public List<Stop> Stops { get; set; }
 
     public static EditEntryModel FromEntry(Entry entry)
     {

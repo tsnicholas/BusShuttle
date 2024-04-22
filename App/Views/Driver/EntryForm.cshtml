@@ -3,39 +3,35 @@
     ViewData["Title"] = "Loop";
 }
 
-<div class="flex flex-col justify-content-center border border-secondary-subtle text-center p-5 m-5">
+<div class="flex flex-col justify-content-center border border-secondary text-center p-5 m-5">
     <form asp-action="EntryForm" method="POST">
+        <input type="hidden" asp-for="BusId" />
+        <input type="hidden" asp-for="DriverId" />
+        <input type="hidden" asp-for="LoopId" />
+        <div asp-validation-summary="ModelOnly" class="text-danger form-text"></div>
         <div class="form-group py-2 my-2">
-            <input type="hidden" asp-for="BusId" />
-            <span asp-validation-for="BusId" class="text-danger form-text"></span>
-            <input type="hidden" asp-for="DriverId" />
-            <span asp-validation-for="DriverId" class="text-danger form-text"></span>
-            <input type="hidden" asp-for="LoopId" />
-            <span asp-validation-for="LoopId" class="text-danger form-text"></span>
-        </div>
-        <div class="form-group py-2 my-2">
-            <label asp-for="StopId" class="form-label"></label>
+            <label asp-for="StopId" class="control-label fs-3 text-light"></label>
             <select asp-for="StopId" class="form-select form-control">
                 <option selected></option>
                 @foreach(var stop in Model.Stops)
                 {
-                    <option value="@stop.Id">@stop.Name</option>
+                    <option value="@stop.Id" class="text-light">@stop.Name</option>
                 }
             </select>
             <span asp-validation-for="StopId" class="text-danger form-text"></span>
         </div>
         <div class="form-group py-2 my-2">
-            <label asp-for="Boarded" class="control-label"></label>
-            <input asp-for="Boarded" class="form-control" />
+            <label asp-for="Boarded" class="control-label fs-3 text-light"></label>
+            <input asp-for="Boarded" class="form-control text-light" />
             <span asp-validation-for="Boarded" class="text-danger form-text"></span>
         </div>
         <div class="form-group py-2 my-2">
-            <label asp-for="LeftBehind" class="control-label"></label>
-            <input asp-for="LeftBehind" class="form-control" />
+            <label asp-for="LeftBehind" class="control-label fs-3 text-light"></label>
+            <input asp-for="LeftBehind" class="form-control text-light" />
             <span asp-validation-for="LeftBehind" class="text-danger form-text"></span>
         </div>
         <div class="form-group py-2 my-2">
-            <input type="submit" value="Submit Entry" class="btn btn-primary" />
+            <input type="submit" value="Submit Entry" class="btn btn-primary btn-lg w-25 text-light" />
         </div>
     </form>
 </div>

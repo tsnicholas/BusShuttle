@@ -8,57 +8,56 @@
 }
 
 <h2>Driver Table</h2>
-<a asp-controller="Home" asp-action="Index">Back to Menu</a>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Email)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FirstName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.LastName)
-            </th>
-            <th></th>
-            <th></th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @if(Model != null)
-        {
-            @foreach(var item in Model)
+<a asp-controller="Home" asp-action="Index" class="pb-3 link-info">Back to Menu</a>
+<div class="flex flex-col justify-content-center border border-secondary p-5 m-5 text-center">
+    <table class="table table-striped border border-light">
+        <thead>
+            <tr>
+                <th class="text-light">
+                    @Html.DisplayNameFor(model => model.Id)
+                </th>
+                <th class="text-light">
+                    @Html.DisplayNameFor(model => model.Email)
+                </th>
+                <th class="text-light">
+                    @Html.DisplayNameFor(model => model.FirstName)
+                </th>
+                <th class="text-light">
+                    @Html.DisplayNameFor(model => model.LastName)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @if(Model != null)
             {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(model => item.Id)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(model => item.Email)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(model => item.FirstName)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(model => item.LastName)
-                    </td>
-                    <td>
-                        <a asp-action="ActivateDriver" asp-route-id="@item.Email">Activate</a>
-                    </td>
-                    <td>
-                        <a asp-action="EditDriver" asp-route-id="@item.Id">Edit</a>
-                    </td>
-                    <td>
-                        <a asp-action="DeleteDriver" asp-route-id="@item.Id">Delete</a>
-                    </td>
-                </tr>
+                @foreach(var item in Model)
+                {
+                    <tr>
+                        <td class="text-light">
+                            @Html.DisplayFor(model => item.Id)
+                        </td>
+                        <td class="text-light">
+                            @Html.DisplayFor(model => item.Email)
+                        </td>
+                        <td class="text-light">
+                            @Html.DisplayFor(model => item.FirstName)
+                        </td>
+                        <td class="text-light">
+                            @Html.DisplayFor(model => item.LastName)
+                        </td>
+                        <td class="text-light">
+                            <a asp-action="ActivateDriver" asp-route-id="@item.Email" class="link-info">Activate</a> |
+                            <a asp-action="EditDriver" asp-route-id="@item.Id" class="link-info">Edit</a> |
+                            <a asp-action="DeleteDriver" asp-route-id="@item.Id" class="link-info">Delete</a>
+                        </td>
+                    </tr>
+                }
             }
-        }
-    </tbody>
-</table>
-<a asp-action="CreateDriver">Create Driver</a>
+        </tbody>
+    </table>
+    <button asp-action="CreateDriver" class="btn btn-primary btn-lg w-25 text-light">
+        Create Driver
+    </button>
+</div>
+

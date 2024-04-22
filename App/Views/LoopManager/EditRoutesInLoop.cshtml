@@ -3,34 +3,38 @@
     ViewData["Title"] = "Loop Routes";
 }
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                Id
-            </th>
-            <th>
-                Order
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach(var item in Model.Routes)
-        {
+<a asp-action="Index" class="link-info">Back to Table</a>
+<div class="flex flex-col justify-content-center border border-secondary p-5 m-5 text-center">
+    <table class="table table-striped border border-light">
+        <thead>
             <tr>
-                <td>
-                    @item.Id
-                </td>
-                <td>
-                    @item.Order
-                </td>
-                <td>
-                    <a asp-action="RemoveRoute" asp-route-id="@item.Id">Remove</a>
-                </td>
+                <th class="text-light">
+                    Id
+                </th>
+                <th class="text-light">
+                    Order
+                </th>
+                <th class="text-light"></th>
             </tr>
-        }
-    </tbody>
-</table>
-<p>Number of Routes: @Model.Routes.Count()</p>
-<a asp-action="AddRoute" asp-route-id="@Model.LoopId">Add Route</a>
+        </thead>
+        <tbody>
+            @foreach(var item in Model.Routes)
+            {
+                <tr>
+                    <td class="text-light">
+                        @item.Id
+                    </td>
+                    <td class="text-light">
+                        @item.Order
+                    </td>
+                    <td class="text-light">
+                        <a asp-action="RemoveRoute" asp-route-id="@item.Id" class="link-warning">Remove</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <button asp-action="AddRoute" asp-route-id="@Model.LoopId" class="btn btn-primary btn-lg w-25 text-light">
+        Add Route
+    </button>
+</div>

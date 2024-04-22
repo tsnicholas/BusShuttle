@@ -4,81 +4,78 @@
 }
 
 <h2>Entry Table</h2>
-<a asp-controller="Home" asp-action="Index">Back to Menu</a>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Timestamp)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Boarded)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.LeftBehind)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.BusId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DriverId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.LoopId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.StopId)
-            </th>
-            <th>
-                Edit Page
-            </th>
-            <th>
-                Delete Button
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        @if(Model != null)
-        {
-            @foreach(var item in Model)
+<a asp-controller="Home" asp-action="Index" class="pb-3 link-info">Back to Menu</a>
+<div class="flex flex-col justify-content-center border border-secondary p-5 m-5 text-center">
+    <table class="table table-striped border border-light">
+        <thead>
+            <tr>
+                <th class="text-light">
+                    @Html.DisplayNameFor(model => model.Id)
+                </th>
+                <th class="text-light">
+                    @Html.DisplayNameFor(model => model.Timestamp)
+                </th>
+                <th class="text-light">
+                    @Html.DisplayNameFor(model => model.Boarded)
+                </th>
+                <th class="text-light">
+                    @Html.DisplayNameFor(model => model.LeftBehind)
+                </th>
+                <th class="text-light">
+                    @Html.DisplayNameFor(model => model.BusId)
+                </th>
+                <th class="text-light">
+                    @Html.DisplayNameFor(model => model.DriverId)
+                </th>
+                <th class="text-light">
+                    @Html.DisplayNameFor(model => model.LoopId)
+                </th>
+                <th class="text-light">
+                    @Html.DisplayNameFor(model => model.StopId)
+                </th>
+                <th class="text-light"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @if(Model != null)
             {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(model => item.Id)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(model => item.Timestamp)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(model => item.Boarded)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(model => item.LeftBehind)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(model => item.BusId)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(model => item.DriverId)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(model => item.LoopId)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(model => item.StopId)
-                    </td>
-                    <td>
-                        <a asp-action="EditEntry" asp-route-id="@item.Id">Edit</a>
-                    </td>
-                    <td>
-                        <a asp-action="DeleteEntry" asp-route-id="@item.Id">Delete</a>
-                    </td>
-                </tr>
+                @foreach(var item in Model)
+                {
+                    <tr>
+                        <td class="text-light">
+                            @Html.DisplayFor(model => item.Id)
+                        </td>
+                        <td class="text-light">
+                            @Html.DisplayFor(model => item.Timestamp)
+                        </td>
+                        <td class="text-light">
+                            @Html.DisplayFor(model => item.Boarded)
+                        </td>
+                        <td class="text-light">
+                            @Html.DisplayFor(model => item.LeftBehind)
+                        </td>
+                        <td class="text-light">
+                            @Html.DisplayFor(model => item.BusId)
+                        </td>
+                        <td class="text-light">
+                            @Html.DisplayFor(model => item.DriverId)
+                        </td>
+                        <td class="text-light">
+                            @Html.DisplayFor(model => item.LoopId)
+                        </td>
+                        <td class="text-light">
+                            @Html.DisplayFor(model => item.StopId)
+                        </td>
+                        <td class="text-light">
+                            <a asp-action="EditEntry" asp-route-id="@item.Id" class="link-info">Edit</a> |
+                            <a asp-action="DeleteEntry" asp-route-id="@item.Id" class="link-info">Delete</a>
+                        </td>
+                    </tr>
+                }
             }
-        }
-    </tbody>
-</table>
-<a asp-action="CreateEntry">Create Entry</a>
+        </tbody>
+    </table>
+    <button asp-action="CreateEntry" class="btn btn-primary btn-lg w-25 text-light">
+        Create Entry
+    </button>
+</div>

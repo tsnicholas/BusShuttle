@@ -3,21 +3,18 @@
     ViewData["Title"] = "Edit Route";
 }
 
-<h2>Route Editor</h2>
-<a asp-action="Index">Back to Table</a>
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="EditRoute">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="Order" class="control-label"></label>
-                <input asp-for="Order" class="form-control" />
-                <span asp-validation-for="Order" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
+<a asp-action="Index" class="link-info">Back to Table</a>
+<div class="flex flex-col justify-content-center border border-secondary p-5 m-5 text-center">
+    <form asp-action="EditRoute">
+        <div asp-validation-summary="ModelOnly" class="text-danger form-text"></div>
+        <input type="hidden" asp-for="Id" />
+        <div class="form-group py-2 my-2">
+            <label asp-for="Order" class="control-label fs-3 text-light"></label>
+            <input asp-for="Order" class="form-control text-light"/>
+            <span asp-validation-for="Order" class="text-danger form-text"></span>
+        </div>
+        <div class="form-group py-2 my-2">
+            <input type="submit" value="Save" class="btn btn-primary btn-lg w-25 text-light" />
+        </div>
+    </form>
 </div>

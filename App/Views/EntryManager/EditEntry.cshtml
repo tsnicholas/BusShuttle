@@ -3,51 +3,48 @@
     ViewData["Title"] = "Create Entry";
 }
 
-<h2>Entry Creator</h2>
-<a asp-action="Index">Back to Table</a>
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="EditEntry">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="Timestamp" class="control-label"></label>
-                <input asp-for="Timestamp" class="form-control" />
-                <span asp-validation-for="Timestamp" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Boarded" class="control-label"></label>
-                <input asp-for="Boarded" class="form-control" />
-                <span asp-validation-for="Boarded" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="LeftBehind" class="control-label"></label>
-                <input asp-for="LeftBehind" class="form-control" />
-                <span asp-validation-for="LeftBehind" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="BusId" class="control-label"></label>
-                <input asp-for="BusId" class="form-control" />
-                <span asp-validation-for="BusId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DriverId" class="control-label"></label>
-                <input asp-for="DriverId" class="form-control" />
-                <span asp-validation-for="DriverId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="LoopId" class="control-label"></label>
-                <input asp-for="LoopId" class="form-control" />
-                <span asp-validation-for="LoopId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="StopId" class="control-label"></label>
-                <input asp-for="StopId" class="form-control" />
-                <span asp-validation-for="StopId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
+<a asp-action="Index" class="link-info">Back to Table</a>
+<div class="flex flex-col justify-content-center border border-secondary p-5 m-5 text-center">
+    <form asp-action="EditEntry" method="POST">
+        <input type="hidden" asp-for="Id" />
+        <div asp-validation-summary="ModelOnly" class="text-danger form-text"></div>
+        <div class="form-group py-2 my-2">
+            <label asp-for="Timestamp" class="control-label fs-3 text-light"></label>
+            <input asp-for="Timestamp" class="form-control text-light" />
+            <span asp-validation-for="Timestamp" class="text-danger form-text"></span>
+        </div>
+        <div class="form-group py-2 my-2">
+            <label asp-for="Boarded" class="control-label fs-3 text-light"></label>
+            <input asp-for="Boarded" class="form-control text-light" />
+            <span asp-validation-for="Boarded" class="text-danger form-text"></span>
+        </div>
+        <div class="form-group py-2 my-2">
+            <label asp-for="LeftBehind" class="control-label fs-3 text-light"></label>
+            <input asp-for="LeftBehind" class="form-control text-light" />
+            <span asp-validation-for="LeftBehind" class="text-danger form-text"></span>
+        </div>
+        <div class="form-group py-2 my-2">
+            <label asp-for="BusId" class="control-label fs-3 text-light"></label>
+            <input asp-for="BusId" class="form-control text-light" />
+            <span asp-validation-for="BusId" class="text-danger form-text"></span>
+        </div>
+        <div class="form-group py-2 my-2">
+            <label asp-for="DriverId" class="control-label fs-3 text-light"></label>
+            <input asp-for="DriverId" class="form-control text-light" />
+            <span asp-validation-for="DriverId" class="text-danger form-text"></span>
+        </div>
+        <div class="form-group py-2 my-2">
+            <label asp-for="LoopId" class="control-label fs-3 text-light"></label>
+            <input asp-for="LoopId" class="form-control text-light" />
+            <span asp-validation-for="LoopId" class="text-danger form-text"></span>
+        </div>
+        <div class="form-group py-2 my-2">
+            <label asp-for="StopId" class="control-label fs-3 text-light"></label>
+            <input asp-for="StopId" class="form-control text-light" />
+            <span asp-validation-for="StopId" class="text-danger form-text"></span>
+        </div>
+        <div class="form-group py-2 my-2">
+            <input type="submit" value="Save" class="btn btn-primary btn-lg w-25 text-light"/>
+        </div>
+    </form>
 </div>

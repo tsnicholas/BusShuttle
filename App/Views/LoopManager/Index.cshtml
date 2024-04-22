@@ -4,45 +4,43 @@
 }
 
 <h2>Loop Table</h2>
-<a asp-controller="Home" asp-action="Index">Back to Menu</a>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th></th>
-            <th></th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @if(Model != null)
-        {
-            @foreach(var item in Model)
+<a asp-controller="Home" asp-action="Index" class="pb-3 link-info">Back to Menu</a>
+<div class="flex flex-col justify-content-center border border-secondary p-5 m-5 text-center">
+    <table class="table table-striped border border-light">
+        <thead>
+            <tr>
+                <th class="text-light">
+                    @Html.DisplayNameFor(model => model.Id)
+                </th>
+                <th class="text-light">
+                    @Html.DisplayNameFor(model => model.Name)
+                </th>
+                <th class="text-light"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @if(Model != null)
             {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(model => item.Id)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(model => item.Name)
-                    </td>
-                    <td>
-                        <a asp-action="EditLoop" asp-route-id="@item.Id">Edit</a>
-                    </td>
-                    <td>
-                        <a asp-action="DeleteLoop" asp-route-id="@item.Id">Delete</a>
-                    </td>
-                    <td>
-                        <a asp-action="EditRoutesInLoop" asp-route-id="@item.Id">Edit Routes</a>
-                    </td>
-                </tr>
+                @foreach(var item in Model)
+                {
+                    <tr>
+                        <td class="text-light">
+                            @Html.DisplayFor(model => item.Id)
+                        </td>
+                        <td class="text-light">
+                            @Html.DisplayFor(model => item.Name)
+                        </td>
+                        <td class="text-light">
+                            <a asp-action="EditLoop" asp-route-id="@item.Id" class="link-info">Edit</a> |
+                            <a asp-action="DeleteLoop" asp-route-id="@item.Id" class="link-info">Delete</a> |
+                            <a asp-action="EditRoutesInLoop" asp-route-id="@item.Id" class="link-info">Edit Routes</a>
+                        </td>
+                    </tr>
+                }
             }
-        }
-    </tbody>
-</table>
-<a asp-action="CreateLoop">Create Loop</a>
+        </tbody>
+    </table>
+    <button asp-action="CreateLoop" class="btn btn-primary btn-lg w-25 text-light">
+        Create Loop
+    </button>
+</div>

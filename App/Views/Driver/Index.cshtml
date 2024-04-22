@@ -6,28 +6,29 @@
 
 <div class="flex flex-col justify-content-center border border-secondary-subtle text-center p-5 m-5">
     <form asp-action="Index" method="POST">
-        <div class="form-group py-3 my-3 gap-2">
-            <label asp-for="LoopId" class="form-label fs-3"></label>
+        <div asp-validation-summary="ModelOnly" class="text-danger form-text"></div>
+        <div class="form-group py-2 my-2">
+            <label asp-for="LoopId" class="form-label fs-3 text-light"></label>
             <select asp-for="LoopId" class="form-select form-control">
                 <option selected></option>
                 @foreach(var loop in Model.Loops)
                 {
-                    <option value="@loop.Id">@loop.Name</option>
+                    <option value="@loop.Id" class="text-light">@loop.Name</option>
                 }
             </select>
         </div>
-        <div class="form-group py-3 my-3 gap-2">
-            <label asp-for="BusId" class="form-label fs-3"></label>
-            <select asp-for="BusId" class="form-select form-control ">
+        <div class="form-group py-2 my-2">
+            <label asp-for="BusId" class="form-label fs-3 text-light"></label>
+            <select asp-for="BusId" class="form-select form-control">
                 <option selected></option>
                 @foreach(var bus in Model.Buses)
                 {
-                    <option value="@bus.Id">@bus.BusNumber</option>
+                    <option value="@bus.Id" class="text-light">@bus.BusNumber</option>
                 }
             </select>
         </div>
-        <div class="form-group py-3 my-3">
-            <input type="submit" value="Start" class="btn btn-primary btn-lg w-25" />
+        <div class="form-group py-2 my-2">
+            <input type="submit" value="Start" class="btn btn-primary btn-lg w-25 text-light" />
         </div>
     </form>
 </div>

@@ -1,8 +1,8 @@
 @using Microsoft.AspNetCore.Identity
+@using System.Security.Claims
+@inject UserManager<IdentityUser> userManager
 
-@inject UserManager<IdentityUser> UserManager
-
-@model IEnumerable<App.Models.Manager.DriverViewModel>;
+@model IEnumerable<App.Models.Manager.DriverViewModel>
 @{
     ViewData["Title"] = "Driver Table";
 }
@@ -25,14 +25,23 @@
                 <th class="text-light">
                     @Html.DisplayNameFor(model => model.LastName)
                 </th>
-                <th></th>
+                <th class="text-light"></th>
             </tr>
         </thead>
         <tbody>
             @if(Model != null)
             {
-                @foreach(var item in Model)
+                foreach(var item in Model)
                 {
+                    bool isUserActivated;
+                    var user = await userManager.FindByEmailAsync(item.Email);
+                    if(user == null) {
+                        userManager.Logger.LogWarning("Couldn't find user by their email on the auth database.");
+                        continue;
+                    }
+                    IList<Claim> claimsList = await userManager.GetClaimsAsync(user);
+                    Claim? activationClaim = claimsList.SingleOrDefault(claim => claim.Type == "activated");
+                    isUserActivated = activationClaim != null && activationClaim.Value == "True";
                     <tr>
                         <td class="text-light">
                             @Html.DisplayFor(model => item.Id)
@@ -47,7 +56,11 @@
                             @Html.DisplayFor(model => item.LastName)
                         </td>
                         <td class="text-light">
-                            <a asp-action="ActivateDriver" asp-route-id="@item.Email" class="link-info">Activate</a> |
+                            @if(isUserActivated) {
+                                <a asp-action="DeactivateDriver" asp-route-id="@item.Email" class="link-danger">Deactivate</a>
+                            } else {
+                                <a asp-action="ActivateDriver" asp-route-id="@item.Email" class="link-info">Activate</a>
+                            }|
                             <a asp-action="EditDriver" asp-route-id="@item.Id" class="link-info">Edit</a> |
                             <a asp-action="DeleteDriver" asp-route-id="@item.Id" class="link-info">Delete</a>
                         </td>
@@ -60,4 +73,3 @@
         Create Driver
     </a>
 </div>
-

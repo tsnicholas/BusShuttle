@@ -52,6 +52,13 @@ public class DriverManagerController(IAccountService accountService, IDatabaseSe
     }
 
     [HttpGet]
+    public async Task<IActionResult> DeactivateDriver([FromRoute] string id)
+    {
+        await _accountService.UpdateAccountActivation(id, false);
+        return RedirectToAction("Index");
+    }
+
+    [HttpGet]
     public IActionResult EditDriver([FromRoute] int id)
     {
         Driver? selectedDriver = _database.GetById<Driver>(id);

@@ -36,7 +36,8 @@ public class EntryManagerControllerTest
         StopId = testStops[1].Id,
         LoopId = testLoops[1].Id
     };
-    private static readonly EditEntryModel editorModel = EditEntryModel.FromEntry(testEntries[0]);
+    private static readonly EditEntryModel editorModel = EditEntryModel.FromEntry(
+        testEntries[0], testBuses, testDrivers, testLoops, testStops);
     private static readonly DeleteEntryModel deletionModel = DeleteEntryModel.DeleteEntry(testEntries[1].Id);
 
     private static readonly Mock<IDatabaseService> mockDatabase = new();
@@ -87,7 +88,7 @@ public class EntryManagerControllerTest
     [Fact]
     public void EntryManagerController_CreateEntry_SuccessfullyReturnsPage()
     {
-        CreateEntryModel initialModel = CreateEntryModel.CreateEntry(testEntries.Count + 1);
+        CreateEntryModel initialModel = CreateEntryModel.CreateEntry(testEntries.Count + 1, testBuses, testDrivers, testLoops, testStops);
         var result = (ViewResult) _controller.CreateEntry();
         var resultingModel = result.Model as CreateEntryModel ?? throw new Exception("Model isn't the correct type.");
         // Since they were both created at different times, the timestamps won't be in sync.

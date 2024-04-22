@@ -25,22 +25,50 @@
         </div>
         <div class="form-group py-2 my-2">
             <label asp-for="BusId" class="control-label fs-3 text-light"></label>
-            <input asp-for="BusId" class="form-control text-light bg-dark" />
+            <select asp-for="BusId" class="form-select text-light bg-dark">
+                @foreach(var bus in Model.Buses)
+                {
+                    <option selected="@(Model.BusId == bus.Id)" value="@bus.Id" class="text-light bg-dark">
+                        @bus.BusNumber
+                    </option>
+                }
+            </select>
             <span asp-validation-for="BusId" class="text-danger form-text"></span>
         </div>
         <div class="form-group py-2 my-2">
             <label asp-for="DriverId" class="control-label fs-3 text-light"></label>
-            <input asp-for="DriverId" class="form-control text-light bg-dark" />
+            <select asp-for="DriverId" class="form-select text-light bg-dark">
+                @foreach(var driver in Model.Drivers)
+                {
+                    <option selected="@(Model.DriverId == driver.Id)" value="@driver.Id" class="text-light bg-dark">
+                        @driver.FirstName @driver.LastName
+                    </option>
+                }
+            </select>
             <span asp-validation-for="DriverId" class="text-danger form-text"></span>
         </div>
         <div class="form-group py-2 my-2">
             <label asp-for="LoopId" class="control-label fs-3 text-light"></label>
-            <input asp-for="LoopId" class="form-control text-light bg-dark" />
+            <select asp-for="LoopId" class="form-select text-light bg-dark">
+                @foreach(var loop in Model.Loops)
+                {
+                    <option selected="@(Model.LoopId == loop.Id)" value="@loop.Id" class="text-light bg-dark">
+                        @loop.Name
+                    </option>
+                }
+            </select>
             <span asp-validation-for="LoopId" class="text-danger form-text"></span>
         </div>
         <div class="form-group py-2 my-2">
             <label asp-for="StopId" class="control-label fs-3 text-light"></label>
-            <input asp-for="StopId" class="form-control text-light bg-dark" />
+            <select asp-for="StopId" class="form-select text-light bg-dark">
+                @foreach(var stop in Model.Stops)
+                {
+                    <option selected="@(Model.StopId == stop.Id)" value="@stop.Id" class="text-light bg-dark">
+                        @stop.Name
+                    </option>
+                }
+            </select>
             <span asp-validation-for="StopId" class="text-danger form-text"></span>
         </div>
         <div class="form-group py-2 my-2">

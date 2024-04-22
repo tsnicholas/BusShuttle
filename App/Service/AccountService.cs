@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
-using System.Security.Principal;
 namespace App.Service;
 
 public class AccountService(UserManager<IdentityUser> userManager, IUserStore<IdentityUser> userStore) : IAccountService

@@ -21,7 +21,14 @@ public class EntryManagerController(IDatabaseService database) : Controller
     [HttpGet]
     public IActionResult CreateEntry()
     {
-        return View(CreateEntryModel.CreateEntry(_database.GenerateId<Entry>()));
+        int newId = _database.GenerateId<Entry>();
+        List<Bus> buses = _database.GetAll<Bus>();
+        List<Driver> drivers = _database.GetAll<Driver>();
+        List<Stop> stops = _database.GetAll<Stop>();
+        List<Loop> loops = _database.GetAll<Loop>();
+        CreateEntryModel creationModel = CreateEntryModel.CreateEntry(
+            newId, buses, drivers, loops, stops);
+        return View(creationModel);
     }
 
     [HttpPost]
@@ -46,7 +53,11 @@ public class EntryManagerController(IDatabaseService database) : Controller
     {
         Entry? selectedEntry = _database.GetById<Entry>(id);
         if(selectedEntry == null) return RedirectToAction("Index");
-        return View(EditEntryModel.FromEntry(selectedEntry));
+        List<Bus> buses = _database.GetAll<Bus>();
+        List<Driver> drivers = _database.GetAll<Driver>();
+        List<Stop> stops = _database.GetAll<Stop>();
+        List<Loop> loops = _database.GetAll<Loop>();
+        return View(EditEntryModel.FromEntry(selectedEntry, buses, drivers, loops, stops));
     }
 
     [HttpPost]
